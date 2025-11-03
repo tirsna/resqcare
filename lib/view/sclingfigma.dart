@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:resqcare/database/db_helper.dart';
-import 'package:resqcare/database/latihan_splas.dart';
+import 'package:resqcare/database/preference_handler.dart';
 import 'package:resqcare/models/user_model.dart';
-import 'package:resqcare/view/daftarui.dart';
+import 'package:resqcare/view/register_screen.dart';
 import 'package:resqcare/view/penyambut.dart';
 import 'package:resqcare/view/sclingfigma.dart';
 import 'package:resqcare/widgets/buildtextfield.dart';
@@ -178,7 +178,9 @@ class _MyWidgetState extends State<Sclingfigma> {
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => DaftarUi()),
+                            MaterialPageRoute(
+                              builder: (context) => DaftarResqcare(),
+                            ),
                           );
                         },
                         child: Text(

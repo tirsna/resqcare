@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:resqcare/database/db_helper.dart';
-import 'package:resqcare/database/latihan_splas.dart';
+import 'package:resqcare/database/preference_handler.dart';
 import 'package:resqcare/models/user_model.dart';
 import 'package:resqcare/view/sclingfigma.dart';
 import 'package:resqcare/widgets/buildtextfield.dart';
@@ -24,6 +24,7 @@ class _HalamanPenyambutState extends State<HalamanPenyambut> {
     DbHelper.getAllPelapor();
     setState(() {});
   }
+
   Future<void> _onedit(UserModel user) async {
     final editNameC = TextEditingController(text: user.username);
     final editEmailC = TextEditingController(text: user.email);
@@ -67,7 +68,7 @@ class _HalamanPenyambutState extends State<HalamanPenyambut> {
         id: user.id,
         username: editNameC.text,
         email: editEmailC.text,
-       nohp: int.parse(editnoHPC.text),
+        nohp: int.parse(editnoHPC.text),
         kota: editcityC.text,
       );
       DbHelper.updatePelapor(updated);
@@ -116,6 +117,7 @@ class _HalamanPenyambutState extends State<HalamanPenyambut> {
       // Fluttertoast.showToast(msg: "Data berhasil di hapus");
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -186,16 +188,9 @@ class _HalamanPenyambutState extends State<HalamanPenyambut> {
 
               child: Text("Logout"),
             ),
-            
           ],
         ),
       ),
     );
-    
   }
-  
 }
-
-
-
-

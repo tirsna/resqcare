@@ -11,7 +11,7 @@ class DbHelper {
   static Future<Database> db() async {
     final dbPath = await getDatabasesPath();
     return openDatabase(
-      join(dbPath, 'GREEN.EARTH'),
+      join(dbPath, 'green.db'),
       onCreate: (db, version) async {
         await db.execute(
           "CREATE TABLE $tableUser(id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, email TEXT, password TEXT, kota TEXT, phone int)",
