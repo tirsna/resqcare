@@ -59,7 +59,7 @@ List<Peringatan> daftarPeringatan = [
     waktu: "2 jam lalu",
     level: "Level 2",
     jumlahTerpengaruh: 567,
-    warnaStatus: Colors.blue,
+    warnaStatus: const Color.fromARGB(255, 0, 0, 0),
     icon: Icons.cloud,
   ),
   

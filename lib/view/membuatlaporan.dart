@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:resqcare/database/db_helper.dart';
+import 'package:resqcare/database/getlaporan.dart';
+import 'package:resqcare/models/modellaporan.dart';
 
 // Halaman utama form laporan darurat
 class FormLaporanDarurat extends StatefulWidget {
@@ -16,6 +19,7 @@ class _FormLaporanDaruratState extends State<FormLaporanDarurat> {
   final TextEditingController _judulController = TextEditingController();
   final TextEditingController _deskripsiController = TextEditingController();
   final TextEditingController _lokasiController = TextEditingController();
+  final TextEditingController _reportNameController = TextEditingController();
 
   // 🔹 Variabel untuk menyimpan dropdown (dipilih user)
   String? _jenisBencana;
@@ -82,6 +86,15 @@ class _FormLaporanDaruratState extends State<FormLaporanDarurat> {
                 controller: _lokasiController,
                 label: "Lokasi Kejadian",
                 hint: "Nama jalan, landmark, atau koordinat",
+              ),
+
+              const SizedBox(height: 15),
+
+              // ==================== INPUT LOKASI KEJADIAN ====================
+              _buildTextField(
+                controller: _reportNameController,
+                label: "Nama Pelapor",
+                hint: "Nama Pelapor",
               ),
 
               const SizedBox(height: 15),
@@ -181,26 +194,28 @@ class _FormLaporanDaruratState extends State<FormLaporanDarurat> {
   }
 
   // ==================== FUNGSI KIRIM DATA ====================
-  void _submitForm() {
+  void _submitForm() async {
     // 🔹 Cek semua input sudah diisi
     if (_formKey.currentState!.validate()) {
       // 🔹 Kumpulkan semua data dari input form
-      final laporan = {
-        'jenisBencana': _jenisBencana,
-        'judul': _judulController.text,
-        'deskripsi': _deskripsiController.text,
-        'lokasi': _lokasiController.text,
-        'tingkatUrgensi': _tingkatUrgensi,
-        'waktuLaporan': DateTime.now().toString(), // waktu laporan dibuat
-      };
+      final Laporan laporan = Laporan(
+        jenisBencana: _jenisBencana!,
+        judul: _judulController.text,
+        deskripsi: _deskripsiController.text,
+        lokasi: _lokasiController.text,
+        urgensi: _tingkatUrgensi!,
+        namapelapor: _reportNameController.text,
+        tanggal: DateTime.now().toString(),
+      );
 
       // 🔹 Tampilkan hasilnya di console (sementara)
       print("Laporan Terkirim: $laporan");
-
-      // 🔹 Tampilkan notifikasi di bawah layar
+      await DbHelper.insertLaporan(laporan);
+      Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Laporan berhasil dikirim!')),
       );
+      // 🔹 Tampilkan notifikasi di bawah layar
     }
   }
 }

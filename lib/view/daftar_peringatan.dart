@@ -29,7 +29,7 @@ class _DaftarPeringatanState extends State<DaftarPeringatan> {
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             subtitle: Text(
-              "${data.deskripsi}\nLokasi: ${data.lokasi}\nWaktu: ${data.waktu}",
+              "${data.deskripsi}/nLokasi: ${data.lokasi}/nWaktu: ${data.waktu}",
             ),
             isThreeLine: true,
             trailing: Text(

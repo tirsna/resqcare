@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
 import 'package:resqcare/database/db_helper.dart';
 import 'package:resqcare/database/preference_handler.dart';
 import 'package:resqcare/models/user_model.dart';
 import 'package:resqcare/view/penyambut.dart';
-import 'package:resqcare/view/sclingfigma.dart';
-import 'package:resqcare/widgets/buildtextfield.dart';
 
 class DaftarResqcare extends StatefulWidget {
   const DaftarResqcare({super.key});
@@ -15,51 +12,70 @@ class DaftarResqcare extends StatefulWidget {
 }
 
 class _DaftarResqcareState extends State<DaftarResqcare> {
-  bool isbuttonenable = false;
+  // Controller untuk inputan teks
   final TextEditingController namacontroler = TextEditingController();
   final TextEditingController emailcontroler = TextEditingController();
   final TextEditingController kota = TextEditingController();
   final TextEditingController nohp = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
-  bool obscurepass = true;
-  final passwordController = TextEditingController();
-
+  // Key untuk validasi form
   final fromkey = GlobalKey<FormState>();
+
+  // Variabel untuk atur tombol & password visibility
+  bool isbuttonenable = false;
+  bool obscurepass = true;
+
   @override
-  void dispose() {
-    super.dispose();
-    emailcontroler.dispose();
-    namacontroler.dispose();
-    kota.dispose();
+  void initState() {
+    super.initState();
+
+    // Cek perubahan setiap field supaya tombol aktif cuma kalau semua terisi
+    namacontroler.addListener(checkformfield);
+    emailcontroler.addListener(checkformfield);
+    kota.addListener(checkformfield);
+    nohp.addListener(checkformfield);
+    passwordController.addListener(checkformfield);
   }
 
+  // Fungsi untuk ngecek apakah semua form sudah terisi
   void checkformfield() {
     setState(() {
       isbuttonenable =
-          emailcontroler.text.isNotEmpty &&
           namacontroler.text.isNotEmpty &&
-          kota.text.isNotEmpty;
+          emailcontroler.text.isNotEmpty &&
+          kota.text.isNotEmpty &&
+          nohp.text.isNotEmpty &&
+          passwordController.text.isNotEmpty;
     });
   }
 
   @override
-  Widget build(BuildContext context) {
-    //1
-    return Scaffold(
-      backgroundColor: Color.fromARGB(255, 1, 78, 46),
+  void dispose() {
+    // Buat ngehapus controller dari memori biar gak bocor
+    namacontroler.dispose();
+    emailcontroler.dispose();
+    kota.dispose();
+    nohp.dispose();
+    // emailcontroler.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
 
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 1, 78, 46),
+      body: SingleChildScrollView(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(height: 50),
+            const SizedBox(height: 50),
+
+            // === KOTAK FORM PUTIH ===
             Container(
               width: 345,
-              height: 700,
-              margin: EdgeInsets.only(bottom: 40),
-              padding: EdgeInsets.symmetric(vertical: 20),
+              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+              margin: const EdgeInsets.only(bottom: 30),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
@@ -67,45 +83,46 @@ class _DaftarResqcareState extends State<DaftarResqcare> {
               child: Form(
                 key: fromkey,
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      "formulir",
-                      style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
+                    const Center(
+                      child: Text(
+                        "Formulir Pendaftaran",
+                        style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                    SizedBox(height: 25),
-                    Text("nama "),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 25),
+
+                    // ===== NAMA =====
+                    const Text("Nama"),
+                    const SizedBox(height: 8),
                     TextFormField(
                       controller: namacontroler,
-                      autovalidateMode: AutovalidateMode.onUnfocus,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: OutlineInputBorder(),
-                        hintText: "masukan nama anda",
+                        hintText: "Masukkan nama anda",
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Nama Wajib Di Isi';
-                        }
-                        //2
-                        return null;
-                      },
+                      validator: (value) => value == null || value.isEmpty
+                          ? 'Nama wajib diisi'
+                          : null,
                     ),
-                    SizedBox(height: 8),
-                    Text("email"),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 12),
+
+                    // ===== EMAIL =====
+                    const Text("Email"),
+                    const SizedBox(height: 8),
                     TextFormField(
                       controller: emailcontroler,
-                      autovalidateMode: AutovalidateMode.onUnfocus,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: OutlineInputBorder(),
-                        hintText: "masukan email anda",
+                        hintText: "Masukkan email anda",
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'emil tidak boleh kosong';
+                          return 'Email wajib diisi';
                         }
                         if (!RegExp(
                           r'^[^@\s]+@[^@\s]+\.[^@\s]+$',
@@ -113,19 +130,19 @@ class _DaftarResqcareState extends State<DaftarResqcare> {
                           return 'Format email tidak valid';
                         }
                         return null;
-                        //3
-                        // return null;
                       },
                     ),
-                    Text("Password"),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 12),
+
+                    // ===== PASSWORD =====
+                    const Text("Password"),
+                    const SizedBox(height: 8),
                     TextFormField(
                       controller: passwordController,
-                      autovalidateMode: AutovalidateMode.onUnfocus,
                       obscureText: obscurepass,
                       decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: 'Masukan Password anda',
+                        border: const OutlineInputBorder(),
+                        hintText: 'Masukkan password anda',
                         suffixIcon: IconButton(
                           onPressed: () {
                             setState(() {
@@ -149,14 +166,16 @@ class _DaftarResqcareState extends State<DaftarResqcare> {
                         return null;
                       },
                     ),
-                    SizedBox(height: 8),
-                    Text("no hp "),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 12),
+
+                    // ===== NO HP =====
+                    const Text("Nomor HP"),
+                    const SizedBox(height: 8),
                     TextFormField(
                       controller: nohp,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: OutlineInputBorder(),
-                        hintText: "no hp",
+                        hintText: "Masukkan nomor HP",
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -165,21 +184,94 @@ class _DaftarResqcareState extends State<DaftarResqcare> {
                         final RegExp phoneRegExp = RegExp(
                           r'^(?:\+62|0)[0-9]{8,14}$',
                         );
-
                         if (!phoneRegExp.hasMatch(value)) {
                           return 'Format nomor HP tidak valid';
                         }
                         return null;
                       },
                     ),
-                    SizedBox(height: 8),
-                    Text("kota "),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 12),
+
+                    // ===== KOTA =====
+                    const Text("Kota"),
+                    const SizedBox(height: 8),
                     TextFormField(
                       controller: kota,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: OutlineInputBorder(),
-                        hintText: "Masukan Kota",
+                        hintText: "Masukkan kota anda",
+                      ),
+                      validator: (value) => value == null || value.isEmpty
+                          ? 'Kota wajib diisi'
+                          : null,
+                    ),
+                    const SizedBox(height: 25),
+
+                    // ===== TOMBOL DAFTAR =====
+                    Center(
+                      child: SizedBox(
+                        width: 120,
+                        height: 50,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color.fromARGB(
+                              255,
+                              7,
+                              85,
+                              0,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                          ),
+                          onPressed: isbuttonenable
+                              ? () async {
+                                  if (fromkey.currentState!.validate()) {
+                                    // Simpan status login
+                                    PreferenceHandler.saveLogin(true);
+
+                                    // Simpan ke database
+                                    final user = UserModel(
+                                      username: namacontroler.text,
+                                      email: emailcontroler.text,
+                                      password: passwordController.text,
+                                      nohp: int.parse(nohp.text),
+                                      kota: kota.text,
+                                    );
+                                    await DbHelper.registerUser(user);
+
+                                    // Tampilkan pesan & pindah halaman
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text("Pendaftaran berhasil"),
+                                      ),
+                                    );
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => HalamanPenyambut(
+                                          email: emailcontroler.text,
+                                          nama: namacontroler.text,
+                                          kota: kota.text,
+                                        ),
+                                      ),
+                                    );
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                          "Masukkan semua data dengan benar",
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                }
+                              : null,
+                          child: const Text(
+                            "Daftar",
+                            style: TextStyle(color: Colors.white, fontSize: 16),
+                          ),
+                        ),
                       ),
                     ),
                   ],
@@ -187,79 +279,25 @@ class _DaftarResqcareState extends State<DaftarResqcare> {
               ),
             ),
 
-            Center(
-              child: SizedBox(
-                width: 100,
-                height: 60,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color.fromARGB(255, 7, 85, 0),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                  ),
-                  onPressed: () {
-                    if (fromkey.currentState!.validate()) {
-                      PreferenceHandler.saveLogin(true);
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => HalamanPenyambut(
-                            email: emailcontroler.text,
-                            nama: namacontroler.text,
-                            kota: kota.text,
-                          ),
-                        ),
-                        (route) => false,
-                      );
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("daftar berhasil")),
-                      );
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text("masukan semua data dengan benar"),
-                        ),
-                      );
-                    }
-                    print('Nama: ${namacontroler.text}');
-                    print('Email: ${emailcontroler.text}');
-                    print('Kota: ${kota.text}');
-                    final UserModel dataStudent = UserModel(
-                      username: namacontroler.text,
-                      email: emailcontroler.text,
-                      password: passwordController.text,
-                      nohp: int.parse(nohp.text),
-                      kota: kota.text,
-                    );
-                    DbHelper.registerUser(dataStudent);
-                  },
-                  child: Text(
-                    "daftar",
-                    style: TextStyle(
-                      color: const Color.fromARGB(255, 255, 255, 255),
-                    ),
-                  ),
-                ),
-              ),
-            ),
+            // ===== TOMBOL SIGN IN =====
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  "have an account?",
+                const Text(
+                  "Sudah punya akun?",
                   style: TextStyle(
                     color: Colors.white,
-                    fontFamily: 'Inter',
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(width: 1),
                 TextButton(
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: Text("Sign In", style: TextStyle(color: Colors.blue)),
+                  child: const Text(
+                    "sing in",
+                    style: TextStyle(color: Colors.blue),
+                  ),
                 ),
               ],
             ),

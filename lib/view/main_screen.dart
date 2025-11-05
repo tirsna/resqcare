@@ -19,7 +19,7 @@ class _HalamanutamaState extends State<Halamanutama> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, color: const Color.fromARGB(255, 12, 82, 39), size: 36),
+          Icon(icon, color: const Color(0xFF00695C), size: 36),
           const SizedBox(height: 10),
           Text(
             title,
@@ -45,12 +45,6 @@ class _HalamanutamaState extends State<Halamanutama> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: const Color.fromARGB(255, 24, 61, 27),
-        child: Icon(Icons.add),
-      ),
-      // backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Container(
           decoration: BoxDecoration(
@@ -59,10 +53,11 @@ class _HalamanutamaState extends State<Halamanutama> {
               end: Alignment.bottomCenter,
               colors: [
                 Color.fromARGB(255, 237, 240, 240),
-                Color.fromARGB(255, 143, 143, 143),
+                Color.fromARGB(255, 195, 247, 247),
               ],
             ),
           ),
+          padding: EdgeInsets.all(3),
           child: Center(
             child: Column(
               children: [
@@ -70,7 +65,7 @@ class _HalamanutamaState extends State<Halamanutama> {
                   height: 300,
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 1, 63, 7),
+                    color: const Color(0xFF00695C),
                     borderRadius: BorderRadius.circular(22),
                   ),
                   child: Padding(
@@ -82,10 +77,19 @@ class _HalamanutamaState extends State<Halamanutama> {
                           children: [
                             Container(
                               decoration: BoxDecoration(
-                                color: Colors.grey.withOpacity(0.5),
+                                color: const Color.fromARGB(
+                                  255,
+                                  255,
+                                  255,
+                                  255,
+                                ).withOpacity(0.5),
                                 borderRadius: BorderRadius.circular(6),
                               ),
-                              child: Icon(Icons.abc, size: 70),
+                              child: Image.asset(
+                                'assets/images/ResQcare App Logo - Emblem Style.jpg',
+                                width: 70,
+                                height: 70,
+                              ),
                             ),
                             const SizedBox(width: 15),
                             Column(
@@ -117,7 +121,12 @@ class _HalamanutamaState extends State<Halamanutama> {
                           height: 78,
                           width: 400,
                           decoration: BoxDecoration(
-                            color: Colors.grey.withOpacity(0.5),
+                            color: const Color.fromARGB(
+                              255,
+                              194,
+                              194,
+                              194,
+                            ).withOpacity(0.5),
                             borderRadius: BorderRadius.circular(15),
                           ),
 

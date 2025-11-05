@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:resqcare/view/halamanutama.dart';
-import 'package:resqcare/view/laporan.dart';
+import 'package:resqcare/view/laporantrending.dart';
+import 'package:resqcare/view/main_screen.dart';
 import 'package:resqcare/view/maps.dart';
 import 'package:resqcare/view/membuatlaporan.dart';
 import 'package:resqcare/view/profail.dart';
@@ -19,21 +19,15 @@ class _BottomNavExampleState extends State<BottomNavExample> {
     Halamanutama(),
     LaporanMasyarakatPage(),
     PetaZonaBahayaPage(),
-    ProfilResqCarePage(),
+    ProfilPage(),
+
+    
+    
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => FormLaporanDarurat()),
-          );
-        },
-        child: Icon(Icons.add),
-      ),
       body: _pages[_selectedIndex],
       bottomNavigationBar: Container(
         decoration: BoxDecoration(

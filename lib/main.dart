@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:resqcare/view/loginresqcare.dart';
+import 'package:resqcare/view/bottomnav.dart';
 import 'package:resqcare/view/daftar_peringatan.dart';
 import 'package:resqcare/view/danger_zonemaps.dart';
-import 'package:resqcare/view/laporan_screen.dart';
+import 'package:resqcare/view/login_screen.dart';
 // import 'package:ppkd_batch_4/checkbox.dart';
 // import 'package:ppkd_batch_4/day18/daftarui.dart';
 // import 'package:ppkd_batch_4/day19/splashscreen.dart';
@@ -45,7 +45,8 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
       ),
-      home: DangerZonemaps(),
+      home: Loginresqcare(),
+      
     );
   }
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:resqcare/database/db_helper.dart';
+import 'package:resqcare/models/user_model.dart';
 import 'package:resqcare/view/bottomnav.dart';
-import 'package:resqcare/view/daftarui.dart';
+import 'package:resqcare/view/register_screen.dart';
 
 class Loginresqcare extends StatefulWidget {
   const Loginresqcare({super.key});
@@ -10,7 +12,6 @@ class Loginresqcare extends StatefulWidget {
 }
 
 class _LoginresqcareState extends State<Loginresqcare> {
-  // ✅ Controller dan key
   final _formKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -21,10 +22,9 @@ class _LoginresqcareState extends State<Loginresqcare> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF044635),
+      backgroundColor: const Color(0xFF004D40),
       body: Center(
         child: SingleChildScrollView(
-          // ✅ Supaya bisa discroll dan form tetap utuh
           child: Container(
             margin: const EdgeInsets.symmetric(vertical: 24),
             width: 350,
@@ -42,23 +42,20 @@ class _LoginresqcareState extends State<Loginresqcare> {
             child: Padding(
               padding: const EdgeInsets.all(20.0),
               child: Form(
-                // ✅ Form aktif
                 key: _formKey,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    // Logo
+                    // 🔹 Logo
                     Container(
                       width: 90,
                       height: 90,
                       decoration: BoxDecoration(
-                        color: Colors.green[900],
+                        color: const Color(0xFF004D40),
                         borderRadius: BorderRadius.circular(18),
                       ),
-                      child: const Icon(
-                        Icons.shield_moon_rounded,
-                        size: 50,
-                        color: Colors.white,
+                      child: Image.asset(
+                        'assets/images/ResQcare App Logo - Emblem Style.jpg',
                       ),
                     ),
                     const SizedBox(height: 10),
@@ -79,7 +76,7 @@ class _LoginresqcareState extends State<Loginresqcare> {
                     ),
                     const SizedBox(height: 30),
 
-                    // Email Field
+                    // 🔹 Email
                     const Align(
                       alignment: Alignment.centerLeft,
                       child: Text("Email", style: TextStyle(fontSize: 13)),
@@ -108,7 +105,7 @@ class _LoginresqcareState extends State<Loginresqcare> {
 
                     const SizedBox(height: 16),
 
-                    // Password Field
+                    // 🔹 Password
                     const Align(
                       alignment: Alignment.centerLeft,
                       child: Text("Password", style: TextStyle(fontSize: 13)),
@@ -148,6 +145,7 @@ class _LoginresqcareState extends State<Loginresqcare> {
 
                     const SizedBox(height: 10),
 
+                    // 🔹 Ingat Saya
                     Row(
                       children: [
                         Checkbox(
@@ -164,7 +162,7 @@ class _LoginresqcareState extends State<Loginresqcare> {
 
                     const SizedBox(height: 10),
 
-                    // Tombol Login
+                    // 🔹 Tombol Login
                     SizedBox(
                       width: double.infinity,
                       height: 50,
@@ -175,27 +173,40 @@ class _LoginresqcareState extends State<Loginresqcare> {
                             borderRadius: BorderRadius.circular(15),
                           ),
                         ),
-                        onPressed: () {
-                          // ✅ Jalankan validasi form
+                        onPressed: () async {
                           if (_formKey.currentState!.validate()) {
-                            // Kalau valid → lanjut
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const BottomNavExample(),
-                              ),
+                            // ✅ Cek user di database
+                            UserModel? user = await DbHelper.loginUser(
+                              email: emailController.text.trim(),
+                              password: passwordController.text.trim(),
                             );
-                          } else {
-                            // Kalau tidak valid → tampilkan pesan error
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  "Periksa kembali email dan password kamu!",
-                                  style: TextStyle(color: Colors.white),
+
+                            if (user != null) {
+                              // ✅ Login sukses
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Login berhasil!'),
+                                  backgroundColor: Colors.green,
                                 ),
-                                backgroundColor: Colors.redAccent,
-                              ),
-                            );
+                              );
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const BottomNavExample(),
+                                ),
+                              );
+                            } else {
+                              // ❌ Login gagal
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                    'Email atau password salah, coba lagi!',
+                                  ),
+                                  backgroundColor: Colors.redAccent,
+                                ),
+                              );
+                            }
                           }
                         },
                         child: const Text(
@@ -211,7 +222,7 @@ class _LoginresqcareState extends State<Loginresqcare> {
 
                     const SizedBox(height: 30),
 
-                    // Garis pemisah
+                    // 🔹 Garis pemisah
                     Row(
                       children: const [
                         Expanded(
@@ -232,7 +243,7 @@ class _LoginresqcareState extends State<Loginresqcare> {
 
                     const SizedBox(height: 15),
 
-                    // Login Sosial Media
+                    // 🔹 Tombol Sosial
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -244,7 +255,7 @@ class _LoginresqcareState extends State<Loginresqcare> {
 
                     const SizedBox(height: 25),
 
-                    // Sign Up
+                    // 🔹 Sign Up
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -254,7 +265,7 @@ class _LoginresqcareState extends State<Loginresqcare> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const DaftarUi(),
+                                builder: (context) => const DaftarResqcare(),
                               ),
                             );
                           },

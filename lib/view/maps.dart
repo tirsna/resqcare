@@ -20,7 +20,7 @@ class PetaZonaBahayaPage extends StatelessWidget {
                   width: double.infinity,
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF004D40),
+                    color: const Color(0xFF00695C),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Column(
@@ -55,13 +55,13 @@ class PetaZonaBahayaPage extends StatelessWidget {
 
                 const SizedBox(height: 24),
 
-                // 🔹 KOTAK PETA INTERAKTIF
+                // Color(0xFF26A69A), Color(0xFF004D40)
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
-                      colors: [Color(0xFFFFE0B2), Color(0xFFFFCCBC)],
+                      colors: [Color(0xFF26A69A), Color(0xFF004D40)],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
@@ -112,7 +112,7 @@ class PetaZonaBahayaPage extends StatelessWidget {
                     ),
                     SizedBox(width: 6),
                     Text(
-                      "Legenda Zona Bahaya",
+                      "peta Zona Bahaya",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,

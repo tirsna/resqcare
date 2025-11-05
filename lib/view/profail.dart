@@ -1,299 +1,264 @@
 import 'package:flutter/material.dart';
-import 'package:resqcare/view/loginresqcare.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class ProfilResqCarePage extends StatelessWidget {
-  const ProfilResqCarePage({super.key});
+class ProfilPage extends StatefulWidget {
+  const ProfilPage({super.key});
+
+  @override
+  State<ProfilPage> createState() => _ProfilPageState();
+}
+
+class _ProfilPageState extends State<ProfilPage> {
+  bool _isEditing = false;
+
+  String nama = "Pengguna ResqCare";
+  String email = "user@trisna.id";
+  String bio = "Relawan aktif yang siap membantu kapan pun.";
+  String daerahAman = "Bandung";
+
+  late TextEditingController namaController;
+  late TextEditingController bioController;
+  late TextEditingController daerahController;
+
+  @override
+  void initState() {
+    super.initState();
+    namaController = TextEditingController();
+    bioController = TextEditingController();
+    daerahController = TextEditingController();
+    _loadData();
+  }
+
+  // 🔹 Ambil data dari SharedPreferences
+  Future<void> _loadData() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      nama = prefs.getString('nama') ?? nama;
+      bio = prefs.getString('bio') ?? bio;
+      daerahAman = prefs.getString('daerahAman') ?? daerahAman;
+
+      namaController.text = nama;
+      bioController.text = bio;
+      daerahController.text = daerahAman;
+    });
+  }
+
+  // 🔹 Simpan data ke SharedPreferences
+  Future<void> _saveData() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('nama', namaController.text);
+    await prefs.setString('bio', bioController.text);
+    await prefs.setString('daerahAman', daerahController.text);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F6F8),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              // Bagian Header
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(
-                  vertical: 32,
-                  horizontal: 20,
+      backgroundColor: const Color(0xFFF5F6FA),
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: const Color(0xFF00695C),
+        leading: IconButton(
+          icon: const Icon(Icons.logout_sharp, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: const Text(
+          "Profil ResqCare",
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(_isEditing ? Icons.check : Icons.edit, color: Colors.white),
+            onPressed: () async {
+              if (_isEditing) {
+                // Simpan hasil edit
+                await _saveData();
+                setState(() {
+                  nama = namaController.text;
+                  bio = bioController.text;
+                  daerahAman = daerahController.text;
+                });
+              }
+              setState(() => _isEditing = !_isEditing);
+            },
+          ),
+        ],
+      ),
+
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        physics: const BouncingScrollPhysics(),
+        child: Column(
+          children: [
+            // 🔹 Header Profil
+            Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [Color(0xFF26A69A), Color(0xFF004D40)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
                 ),
-                decoration: const BoxDecoration(
-                  color: Color(0xFF004D40),
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(24),
-                    bottomRight: Radius.circular(24),
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 10,
+                    offset: Offset(0, 5),
                   ),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    Text(
-                      "Profil ResqCare",
+                ],
+              ),
+              padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+              child: Column(
+                children: [
+                  const CircleAvatar(
+                    radius: 42,
+                    backgroundColor: Colors.white,
+                    child: Icon(Icons.person, color: Color(0xFF004D40), size: 45),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    nama,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  Text(email, style: const TextStyle(color: Colors.white70, fontSize: 14)),
+                  const SizedBox(height: 12),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: const Text(
+                      "Kontributor Aktif",
                       style: TextStyle(
                         color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
-                    SizedBox(height: 6),
-                    Text(
-                      "Kontributor Komunitas Tanggap Bencana",
-                      style: TextStyle(color: Colors.white70, fontSize: 13),
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 20),
-
-              // Profil Pengguna
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 20),
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black12,
-                      blurRadius: 6,
-                      offset: Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  children: [
-                    const CircleAvatar(
-                      radius: 40,
-                      backgroundColor: Color(0xFFD7CCC8),
-                      child: Icon(Icons.person, size: 50, color: Colors.white),
-                    ),
-                    const SizedBox(height: 10),
-                    const Text(
-                      "Pengguna ResqCare",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    const Text(
-                      "user@trisna.id",
-                      style: TextStyle(color: Colors.grey, fontSize: 13),
-                    ),
-                    const SizedBox(height: 10),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 6,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.orange.shade100,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: const Text(
-                        "🟢 KONTRIBUTOR AKTIF",
-                        style: TextStyle(
-                          color: Colors.green,
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 20),
-
-              // Statistik
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 20),
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black12,
-                      blurRadius: 6,
-                      offset: Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      "Statistik Kontribusi",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-
-                    // Deretan Statistik Utama
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: const [
-                        _StatItem(label: "Laporan Dibuat", value: "24"),
-                        _StatItem(label: "Akurasi", value: "96%"),
-                      ],
-                    ),
-
-                    const SizedBox(height: 16),
-                    const Divider(),
-
-                    // Statistik Detail
-                    _DetailStat(
-                      label: "Laporan Kritis",
-                      value: "8",
-                      color: Colors.red,
-                    ),
-                    _DetailStat(
-                      label: "Laporan Terverifikasi",
-                      value: "23",
-                      color: Colors.green,
-                    ),
-                    _DetailStat(
-                      label: "Orang Terbantu",
-                      value: "1,247",
-                      color: Colors.blue,
-                    ),
-                    _DetailStat(
-                      label: "Poin ResqCare",
-                      value: "2,850",
-                      color: Colors.orange,
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 20),
-
-              // Badge Pencapaian
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 20),
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFFFFD54F), Color(0xFFFFB74D)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
                   ),
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black26,
-                      blurRadius: 5,
-                      offset: Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: Row(
-                  children: const [
-                    Icon(Icons.emoji_events, color: Colors.white),
-                    SizedBox(width: 10),
-                    Expanded(
-                      child: Text(
-                        "Badge Pencapaian\nLevel 3 – Tanggap Bencana",
-                        style: TextStyle(color: Colors.white, fontSize: 13),
-                      ),
-                    ),
-                  ],
-                ),
+                ],
               ),
+            ),
 
-              const SizedBox(height: 40),
+            const SizedBox(height: 24),
 
-              Padding(
-                padding: const EdgeInsets.only(left: 16),
-                child: TextButton(
-                  onPressed: () {
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (context) => Loginresqcare()),
-                      (route) => false,
-                    );
-                  },
-                  child: Row(
-                    children: [
-                      Icon(Icons.logout, color: Colors.red),
-                      SizedBox(width: 14),
-                      Text("Logout", style: TextStyle(color: Colors.red)),
-                    ],
-                  ),
-                ),
+            // 🔹 Informasi Pribadi
+            _buildSectionCard(
+              title: "Informasi Pribadi",
+              child: Column(
+                children: [
+                  _isEditing
+                      ? _editField("Nama Lengkap", namaController)
+                      : _textItem("Nama", nama),
+                  const SizedBox(height: 10),
+                  _isEditing
+                      ? _editField("Bio", bioController, maxLines: 2)
+                      : _textItem("Bio", bio),
+                  const SizedBox(height: 10),
+                  _isEditing
+                      ? _editField("Daerah Aman", daerahController)
+                      : _textItem("Daerah Aman", daerahAman),
+                ],
               ),
-            ],
-          ),
+            ),
+
+            const SizedBox(height: 20),
+
+            // 🔹 Statistik Kontribusi
+            _buildSectionCard(
+              title: "Statistik Kontribusi",
+              child: Column(
+                children: [
+                  _buildStatItem(Icons.article_outlined, "Laporan Biasa", "10"),
+                  _buildStatItem(Icons.warning_amber, "Laporan Sedang", "6"),
+                  _buildStatItem(Icons.report_problem, "Laporan Kritis", "8"),
+                  _buildStatItem(Icons.verified, "Terverifikasi", "23"),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
-}
 
-// Widget kecil untuk item statistik utama
-class _StatItem extends StatelessWidget {
-  final String label;
-  final String value;
-  const _StatItem({required this.label, required this.value});
+  // 🔸 Widget Reusable Section
+  Widget _buildSectionCard({required String title, required Widget child}) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        boxShadow: const [
+          BoxShadow(color: Colors.black12, blurRadius: 8, offset: Offset(0, 3)),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title,
+              style: const TextStyle(
+                  fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black87)),
+          const SizedBox(height: 10),
+          child,
+        ],
+      ),
+    );
+  }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _textItem(String label, String value) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          value,
-          style: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Colors.black87,
-          ),
-        ),
+        Text(label,
+            style: const TextStyle(color: Colors.black54, fontWeight: FontWeight.w500)),
         const SizedBox(height: 4),
-        Text(label, style: const TextStyle(color: Colors.grey, fontSize: 12)),
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: Colors.grey.shade100,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Text(value,
+              style: const TextStyle(fontSize: 15, color: Colors.black87)),
+        ),
       ],
     );
   }
-}
 
-// Widget kecil untuk item statistik detail
-class _DetailStat extends StatelessWidget {
-  final String label;
-  final String value;
-  final Color color;
-  const _DetailStat({
-    required this.label,
-    required this.value,
-    required this.color,
-  });
+  Widget _editField(String label, TextEditingController controller, {int maxLines = 1}) {
+    return TextField(
+      controller: controller,
+      maxLines: maxLines,
+      decoration: InputDecoration(
+        labelText: label,
+        filled: true,
+        fillColor: Colors.grey.shade50,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+      ),
+    );
+  }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildStatItem(IconData icon, String title, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
-            children: [
-              Icon(Icons.circle, size: 10, color: color),
-              const SizedBox(width: 6),
-              Text(label, style: const TextStyle(fontSize: 13)),
-            ],
-          ),
-          Text(
-            value,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: color,
-              fontSize: 13,
-            ),
-          ),
+          Icon(icon, color: Colors.teal, size: 22),
+          const SizedBox(width: 12),
+          Expanded(
+              child: Text(title,
+                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500))),
+          Text(value,
+              style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black87)),
         ],
       ),
     );
