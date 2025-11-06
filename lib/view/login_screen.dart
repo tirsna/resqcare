@@ -13,16 +13,18 @@ class Loginresqcare extends StatefulWidget {
 
 class _LoginresqcareState extends State<Loginresqcare> {
   final _formKey = GlobalKey<FormState>();
+
+  // Controller untuk menampung input pengguna
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  bool rememberMe = false;
-  bool showPassword = false;
+  bool rememberMe = false; // menyimpan status checkbox “ingat saya”
+  bool showPassword = false; // mengatur visibilitas password
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF004D40),
+      backgroundColor: const Color(0xFF004D40), // warna hijau tua khas ResQcare
       body: Center(
         child: SingleChildScrollView(
           child: Container(
@@ -46,7 +48,7 @@ class _LoginresqcareState extends State<Loginresqcare> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    // 🔹 Logo
+                    //  LOGO APLIKASI
                     Container(
                       width: 90,
                       height: 90,
@@ -59,6 +61,7 @@ class _LoginresqcareState extends State<Loginresqcare> {
                       ),
                     ),
                     const SizedBox(height: 10),
+
                     const Text(
                       "ResQcare",
                       style: TextStyle(
@@ -76,7 +79,7 @@ class _LoginresqcareState extends State<Loginresqcare> {
                     ),
                     const SizedBox(height: 30),
 
-                    // 🔹 Email
+                    //  FIELD EMAIL
                     const Align(
                       alignment: Alignment.centerLeft,
                       child: Text("Email", style: TextStyle(fontSize: 13)),
@@ -102,10 +105,9 @@ class _LoginresqcareState extends State<Loginresqcare> {
                         return null;
                       },
                     ),
-
                     const SizedBox(height: 16),
 
-                    // 🔹 Password
+                    //  FIELD PASSWORD
                     const Align(
                       alignment: Alignment.centerLeft,
                       child: Text("Password", style: TextStyle(fontSize: 13)),
@@ -142,10 +144,9 @@ class _LoginresqcareState extends State<Loginresqcare> {
                         return null;
                       },
                     ),
-
                     const SizedBox(height: 10),
 
-                    // 🔹 Ingat Saya
+                    //  CHECKBOX "REMEMBER ME"
                     Row(
                       children: [
                         Checkbox(
@@ -159,10 +160,9 @@ class _LoginresqcareState extends State<Loginresqcare> {
                         const Text("Ingatkan saya"),
                       ],
                     ),
-
                     const SizedBox(height: 10),
 
-                    // 🔹 Tombol Login
+                    //  TOMBOL LOGIN
                     SizedBox(
                       width: double.infinity,
                       height: 50,
@@ -174,21 +174,23 @@ class _LoginresqcareState extends State<Loginresqcare> {
                           ),
                         ),
                         onPressed: () async {
+                          // validasi form dulu sebelum lanjut
                           if (_formKey.currentState!.validate()) {
-                            // ✅ Cek user di database
+                            // cek user dari database lokal
                             UserModel? user = await DbHelper.loginUser(
                               email: emailController.text.trim(),
                               password: passwordController.text.trim(),
                             );
 
                             if (user != null) {
-                              // ✅ Login sukses
+                              // Jika login berhasil
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                   content: Text('Login berhasil!'),
                                   backgroundColor: Colors.green,
                                 ),
                               );
+                              // pindah ke halaman utama
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
@@ -197,7 +199,7 @@ class _LoginresqcareState extends State<Loginresqcare> {
                                 ),
                               );
                             } else {
-                              // ❌ Login gagal
+                              // Jika login gagal
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                   content: Text(
@@ -219,10 +221,9 @@ class _LoginresqcareState extends State<Loginresqcare> {
                         ),
                       ),
                     ),
-
                     const SizedBox(height: 30),
 
-                    // 🔹 Garis pemisah
+                    //  PEMISAH (garis dan teks "atau masuk dengan")
                     Row(
                       children: const [
                         Expanded(
@@ -240,22 +241,8 @@ class _LoginresqcareState extends State<Loginresqcare> {
                         ),
                       ],
                     ),
-
                     const SizedBox(height: 15),
-
-                    // 🔹 Tombol Sosial
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _socialButton('assets/images/google.jpg'),
-                        const SizedBox(width: 12),
-                        _socialButton('assets/images/facbok.png'),
-                      ],
-                    ),
-
-                    const SizedBox(height: 25),
-
-                    // 🔹 Sign Up
+                    //  LINK KE REGISTER
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -286,7 +273,7 @@ class _LoginresqcareState extends State<Loginresqcare> {
     );
   }
 
-  // 🔹 Tombol Sosial Media
+  //  TOMBOL LOGIN SOSIAL MEDIA
   Widget _socialButton(String assetPath) {
     return Container(
       padding: const EdgeInsets.all(2),

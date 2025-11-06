@@ -10,34 +10,44 @@ class Halamanutama extends StatefulWidget {
 
 class _HalamanutamaState extends State<Halamanutama> {
   Widget buildActionCard(IconData icon, String title, String subtitle) {
-    return Container(
-      decoration: BoxDecoration(
-        color: const Color.fromARGB(255, 255, 255, 255),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      padding: const EdgeInsets.all(15),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, color: const Color(0xFF00695C), size: 36),
-          const SizedBox(height: 10),
-          Text(
-            title,
-            style: const TextStyle(
-              color: Color.fromARGB(255, 0, 0, 0),
-              fontWeight: FontWeight.bold,
+    return GestureDetector(
+      onTap: () {
+        // Tambahkan aksi nanti di sini
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(18),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 8,
+              offset: const Offset(0, 3),
             ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            subtitle,
-            style: const TextStyle(
-              color: Color.fromARGB(179, 0, 0, 0),
-              fontSize: 12,
+          ],
+        ),
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, color: const Color(0xFF00695C), size: 38),
+            const SizedBox(height: 10),
+            Text(
+              title,
+              style: const TextStyle(
+                color: Color(0xFF004D40),
+                fontWeight: FontWeight.bold,
+                fontSize: 15,
+              ),
             ),
-            textAlign: TextAlign.center,
-          ),
-        ],
+            const SizedBox(height: 6),
+            Text(
+              subtitle,
+              style: const TextStyle(color: Colors.black54, fontSize: 12),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -45,183 +55,177 @@ class _HalamanutamaState extends State<Halamanutama> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFE0F2F1),
       body: SingleChildScrollView(
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Color.fromARGB(255, 237, 240, 240),
-                Color.fromARGB(255, 195, 247, 247),
-              ],
-            ),
-          ),
-          padding: EdgeInsets.all(3),
-          child: Center(
-            child: Column(
-              children: [
-                Container(
-                  height: 300,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF00695C),
-                    borderRadius: BorderRadius.circular(22),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+          child: Column(
+            children: [
+              // HEADER
+              Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF00695C), Color(0xFF00796B)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      blurRadius: 6,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
+                padding: const EdgeInsets.all(18),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Logo + Judul
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        SizedBox(height: 50),
-                        Row(
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                color: const Color.fromARGB(
-                                  255,
-                                  255,
-                                  255,
-                                  255,
-                                ).withOpacity(0.5),
-                                borderRadius: BorderRadius.circular(6),
-                              ),
-                              child: Image.asset(
-                                'assets/images/ResQcare App Logo - Emblem Style.jpg',
-                                width: 70,
-                                height: 70,
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Image.asset(
+                            'assets/images/ResQcare App Logo - Emblem Style.jpg',
+                            width: 65,
+                            height: 65,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        const SizedBox(width: 15),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: const [
+                            Text(
+                              "ResQCare",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 32,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
-                            const SizedBox(width: 15),
-                            Column(
-                              children: [
-                                const Text(
-                                  "ResQcare",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 50,
-                                    fontWeight: FontWeight.bold,
-                                    fontStyle: FontStyle.italic,
-                                  ),
-                                ),
-                                Text(
-                                  "Emergency Response System",
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontStyle: FontStyle.italic,
-                                  ),
-                                ),
-                              ],
+                            Text(
+                              "Emergency Response System",
+                              style: TextStyle(
+                                color: Colors.white70,
+                                fontSize: 14,
+                                fontStyle: FontStyle.italic,
+                              ),
                             ),
                           ],
                         ),
-                        SizedBox(height: 33),
-                        Container(
-                          height: 78,
-                          width: 400,
-                          decoration: BoxDecoration(
-                            color: const Color.fromARGB(
-                              255,
-                              194,
-                              194,
-                              194,
-                            ).withOpacity(0.5),
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SizedBox(width: 12, height: 12),
-                                Text(
-                                  "Status Wilayah Anda",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20,
-                                    fontStyle: FontStyle.italic,
-                                  ),
-                                ),
-                                Text(
-                                  "Aman - Jakarta Pusat",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontStyle: FontStyle.italic,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
                       ],
                     ),
+                    const SizedBox(height: 25),
+
+                    // Status Wilayah
+                    Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: const EdgeInsets.all(12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: const [
+                          Text(
+                            "Status Wilayah Anda",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                            ),
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            "✅ Aman - Jakarta Pusat",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontStyle: FontStyle.italic,
+                              fontSize: 15,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 25),
+
+              // AKSI CEPAT
+              Row(
+                children: const [
+                  Icon(Icons.rocket_launch, color: Color(0xFF004D40)),
+                  SizedBox(width: 8),
+                  Text(
+                    "Aksi Cepat",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      color: Color(0xFF004D40),
+                    ),
                   ),
-                ),
-                Padding(padding: const EdgeInsets.symmetric(horizontal: 16)),
-                Row(
-                  children: [
-                    Icon(Icons.rocket_launch_sharp),
-                    SizedBox(width: 8),
-                    Text(
-                      "Aksi Cepat",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
+                ],
+              ),
+              const SizedBox(height: 12),
+
+              GridView.count(
+                crossAxisCount: 2,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+                children: [
+                  buildActionCard(
+                    Icons.report,
+                    "Buat Laporan",
+                    "Laporkan kejadian darurat",
+                  ),
+                  buildActionCard(
+                    Icons.sos_rounded,
+                    "Darurat",
+                    "Panggil bantuan cepat",
+                  ),
+                  buildActionCard(
+                    Icons.place_outlined,
+                    "Lokasi Aman",
+                    "Temukan tempat aman",
+                  ),
+                  buildActionCard(
+                    Icons.phone,
+                    "Kontak Darurat",
+                    "Hubungi tim rescue",
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 25),
+
+              // PERINGATAN
+              Row(
+                children: const [
+                  Icon(Icons.warning_amber_rounded, color: Colors.redAccent),
+                  SizedBox(width: 8),
+                  Text(
+                    "Peringatan Aktif",
+                    style: TextStyle(
+                      color: Colors.black87,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
                     ),
-                  ],
-                ),
-                GridView.count(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 16,
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  children: [
-                    buildActionCard(
-                      Icons.report,
-                      "Buat Laporan",
-                      "Laporkan kejadian",
-                    ),
-                    buildActionCard(
-                      Icons.sos_rounded,
-                      "Darurat",
-                      "Panggil bantuan",
-                    ),
-                    buildActionCard(
-                      Icons.place_outlined,
-                      "Lokasi Aman",
-                      "Cari tempat aman",
-                    ),
-                    buildActionCard(
-                      Icons.phone,
-                      "Kontak Darurat",
-                      "Hubungi tim rescue",
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Icon(Icons.warning),
-                    Text(
-                      "Peringatan Aktif",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 22,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(child: DaftarPeringatan()),
-              ],
-            ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              const DaftarPeringatan(),
+            ],
           ),
         ),
       ),
