@@ -1,4 +1,4 @@
-package com.example.resqcare
+package com.ppkd.resqcare
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -57,9 +57,7 @@ class _LoginresqcareState extends State<Loginresqcare> {
                         color: const Color(0xFF004D40),
                         borderRadius: BorderRadius.circular(23),
                       ),
-                      child: Image.asset(
-                        'assets/images/ResQcare App Logo - Emblem Style.jpg',
-                      ),
+                      child: Image.asset('assets/images/resqcare.jpg'),
                     ),
                     const SizedBox(height: 10),
 
@@ -192,7 +190,7 @@ class _LoginresqcareState extends State<Loginresqcare> {
                                 ),
                               );
                               // pindah ke halaman utama
-                                PreferenceHandler.saveLogin(true);
+                              PreferenceHandler.saveLogin(true);
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(

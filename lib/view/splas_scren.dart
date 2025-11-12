@@ -100,7 +100,7 @@ class _SplashScreenDay18State extends State<SplashScreenDay18>
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(100),
                       child: Image.asset(
-                        'assets/images/ResQcare App Logo - Emblem Style.jpg',
+                        'assets/images/resqcare.jpg',
                         fit: BoxFit.cover,
                       ),
                     ),

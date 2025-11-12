@@ -65,10 +65,7 @@ class _DaftarResqcareState extends State<DaftarResqcare> {
             // ===== Header Logo & Judul =====
             Column(
               children: [
-                Image.asset(
-                  'assets/images/ResQcare App Logo - Emblem Style.jpg',
-                  width: 100,
-                ),
+                Image.asset('assets/images/resqcare.jpg', width: 100),
                 const SizedBox(height: 12),
                 const Text(
                   "ResQcare Registration",
