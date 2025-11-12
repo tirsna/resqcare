@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:resqcare/view/laporantrending.dart';
-import 'package:resqcare/view/main_screen.dart';
+import 'package:resqcare/Home_page/main_screen.dart';
 import 'package:resqcare/view/maps.dart';
-import 'package:resqcare/view/membuatlaporan.dart';
 import 'package:resqcare/view/profail.dart';
 
 class BottomNavExample extends StatefulWidget {
@@ -20,9 +19,6 @@ class _BottomNavExampleState extends State<BottomNavExample> {
     LaporanMasyarakatPage(),
     PetaZonaBahayaPage(),
     ProfilPage(),
-
-    
-    
   ];
 
   @override

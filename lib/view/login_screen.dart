@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:resqcare/database/db_helper.dart';
+import 'package:resqcare/database/preference_handler.dart';
 import 'package:resqcare/models/user_model.dart';
 import 'package:resqcare/view/bottomnav.dart';
 import 'package:resqcare/view/register_screen.dart';
@@ -54,7 +55,7 @@ class _LoginresqcareState extends State<Loginresqcare> {
                       height: 90,
                       decoration: BoxDecoration(
                         color: const Color(0xFF004D40),
-                        borderRadius: BorderRadius.circular(18),
+                        borderRadius: BorderRadius.circular(23),
                       ),
                       child: Image.asset(
                         'assets/images/ResQcare App Logo - Emblem Style.jpg',
@@ -191,6 +192,7 @@ class _LoginresqcareState extends State<Loginresqcare> {
                                 ),
                               );
                               // pindah ke halaman utama
+                                PreferenceHandler.saveLogin(true);
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(

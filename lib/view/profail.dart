@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:resqcare/database/preference_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:resqcare/view/login_screen.dart';
 
 class ProfilPage extends StatefulWidget {
   const ProfilPage({super.key});
@@ -29,9 +31,9 @@ class _ProfilPageState extends State<ProfilPage> {
     _loadData();
   }
 
-  // 🔹 Ambil data dari SharedPreferences
   Future<void> _loadData() async {
     final prefs = await SharedPreferences.getInstance();
+    if (!mounted) return;
     setState(() {
       nama = prefs.getString('nama') ?? nama;
       bio = prefs.getString('bio') ?? bio;
@@ -43,12 +45,19 @@ class _ProfilPageState extends State<ProfilPage> {
     });
   }
 
-  // 🔹 Simpan data ke SharedPreferences
   Future<void> _saveData() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('nama', namaController.text);
     await prefs.setString('bio', bioController.text);
     await prefs.setString('daerahAman', daerahController.text);
+  }
+
+  @override
+  void dispose() {
+    namaController.dispose();
+    bioController.dispose();
+    daerahController.dispose();
+    super.dispose();
   }
 
   @override
@@ -58,21 +67,20 @@ class _ProfilPageState extends State<ProfilPage> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: const Color(0xFF00695C),
-        leading: IconButton(
-          icon: const Icon(Icons.logout_sharp, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
         title: const Text(
           "Profil ResqCare",
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
         actions: [
           IconButton(
-            icon: Icon(_isEditing ? Icons.check : Icons.edit, color: Colors.white),
+            icon: Icon(
+              _isEditing ? Icons.check : Icons.edit,
+              color: Colors.white,
+            ),
             onPressed: () async {
               if (_isEditing) {
-                // Simpan hasil edit
                 await _saveData();
+                if (!mounted) return;
                 setState(() {
                   nama = namaController.text;
                   bio = bioController.text;
@@ -90,65 +98,8 @@ class _ProfilPageState extends State<ProfilPage> {
         physics: const BouncingScrollPhysics(),
         child: Column(
           children: [
-            // 🔹 Header Profil
-            Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [Color(0xFF26A69A), Color(0xFF004D40)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 10,
-                    offset: Offset(0, 5),
-                  ),
-                ],
-              ),
-              padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
-              child: Column(
-                children: [
-                  const CircleAvatar(
-                    radius: 42,
-                    backgroundColor: Colors.white,
-                    child: Icon(Icons.person, color: Color(0xFF004D40), size: 45),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    nama,
-                    style: const TextStyle(
-                      fontSize: 20,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  Text(email, style: const TextStyle(color: Colors.white70, fontSize: 14)),
-                  const SizedBox(height: 12),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: const Text(
-                      "Kontributor Aktif",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
+            _buildHeader(),
             const SizedBox(height: 24),
-
-            // 🔹 Informasi Pribadi
             _buildSectionCard(
               title: "Informasi Pribadi",
               child: Column(
@@ -167,10 +118,7 @@ class _ProfilPageState extends State<ProfilPage> {
                 ],
               ),
             ),
-
             const SizedBox(height: 20),
-
-            // 🔹 Statistik Kontribusi
             _buildSectionCard(
               title: "Statistik Kontribusi",
               child: Column(
@@ -182,13 +130,74 @@ class _ProfilPageState extends State<ProfilPage> {
                 ],
               ),
             ),
+            const SizedBox(height: 30),
+            _logoutButton(context),
           ],
         ),
       ),
     );
   }
 
-  // 🔸 Widget Reusable Section
+  Widget _buildHeader() {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFF26A69A), Color(0xFF004D40)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 10,
+            offset: Offset(0, 5),
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+      child: Column(
+        children: [
+          const CircleAvatar(
+            radius: 42,
+            backgroundColor: Colors.white,
+            child: Icon(Icons.person, color: Color(0xFF004D40), size: 45),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            nama,
+            style: const TextStyle(
+              fontSize: 20,
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          Text(
+            email,
+            style: const TextStyle(color: Colors.white70, fontSize: 14),
+          ),
+          const SizedBox(height: 12),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: const Text(
+              "Kontributor Aktif",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildSectionCard({required String title, required Widget child}) {
     return Container(
       width: double.infinity,
@@ -203,9 +212,14 @@ class _ProfilPageState extends State<ProfilPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title,
-              style: const TextStyle(
-                  fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black87)),
+          Text(
+            title,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+              color: Colors.black87,
+            ),
+          ),
           const SizedBox(height: 10),
           child,
         ],
@@ -217,8 +231,13 @@ class _ProfilPageState extends State<ProfilPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label,
-            style: const TextStyle(color: Colors.black54, fontWeight: FontWeight.w500)),
+        Text(
+          label,
+          style: const TextStyle(
+            color: Colors.black54,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
         const SizedBox(height: 4),
         Container(
           width: double.infinity,
@@ -227,14 +246,20 @@ class _ProfilPageState extends State<ProfilPage> {
             color: Colors.grey.shade100,
             borderRadius: BorderRadius.circular(8),
           ),
-          child: Text(value,
-              style: const TextStyle(fontSize: 15, color: Colors.black87)),
+          child: Text(
+            value,
+            style: const TextStyle(fontSize: 15, color: Colors.black87),
+          ),
         ),
       ],
     );
   }
 
-  Widget _editField(String label, TextEditingController controller, {int maxLines = 1}) {
+  Widget _editField(
+    String label,
+    TextEditingController controller, {
+    int maxLines = 1,
+  }) {
     return TextField(
       controller: controller,
       maxLines: maxLines,
@@ -255,11 +280,39 @@ class _ProfilPageState extends State<ProfilPage> {
           Icon(icon, color: Colors.teal, size: 22),
           const SizedBox(width: 12),
           Expanded(
-              child: Text(title,
-                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500))),
-          Text(value,
-              style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black87)),
+            child: Text(
+              title,
+              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+            ),
+          ),
+          Text(
+            value,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
+          ),
         ],
+      ),
+    );
+  }
+
+  Widget _logoutButton(BuildContext context) {
+    return ElevatedButton.icon(
+      onPressed: () {
+        PreferenceHandler.removeLogin();
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const Loginresqcare()),
+        );
+      },
+      icon: const Icon(Icons.logout),
+      label: const Text("Keluar Akun"),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.redAccent,
+        foregroundColor: Colors.white,
+        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 14),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     );
   }

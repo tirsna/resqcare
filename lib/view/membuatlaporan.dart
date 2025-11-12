@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:resqcare/database/db_helper.dart';
-import 'package:resqcare/database/getlaporan.dart';
 import 'package:resqcare/models/modellaporan.dart';
 
 // Halaman utama form laporan darurat
