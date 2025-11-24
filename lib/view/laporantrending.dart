@@ -20,7 +20,6 @@ class _LaporanMasyarakatPageState extends State<LaporanMasyarakatPage> {
     getData();
   }
 
-  // Ambil semua data laporan dari database
   Future<void> getData() async {
     final data = await DbHelper.getLaporanList();
     setState(() {
@@ -37,9 +36,7 @@ class _LaporanMasyarakatPageState extends State<LaporanMasyarakatPage> {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const FormLaporanDarurat()),
-          ).then((_) {
-            getData(); // refresh setelah kembali dari form
-          });
+          ).then((_) => getData());
         },
         child: const Icon(Icons.add),
       ),
@@ -47,11 +44,10 @@ class _LaporanMasyarakatPageState extends State<LaporanMasyarakatPage> {
         physics: const BouncingScrollPhysics(),
         child: Column(
           children: [
-            // Header hijau
+            // HEADER
             Container(
-              height: 120,
               width: double.infinity,
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.fromLTRB(20, 40, 20, 24),
               decoration: const BoxDecoration(
                 color: Color(0xFF00695C),
                 borderRadius: BorderRadius.only(
@@ -64,41 +60,46 @@ class _LaporanMasyarakatPageState extends State<LaporanMasyarakatPage> {
                 children: const [
                   Row(
                     children: [
-                      Icon(Icons.report_problem, color: Colors.white, size: 28),
-                      SizedBox(width: 8),
+                      Icon(Icons.report_problem, color: Colors.white, size: 30),
+                      SizedBox(width: 10),
                       Text(
                         "Laporkan Masalah Anda",
                         style: TextStyle(
-                          fontSize: 26,
+                          fontSize: 24,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(height: 12),
+                  SizedBox(height: 8),
                   Text(
                     "Kontribusi real-time dari komunitas ResqCare",
-                    style: TextStyle(fontSize: 13, color: Colors.white70),
+                    style: TextStyle(fontSize: 14, color: Colors.white70),
                   ),
                 ],
               ),
             ),
 
-            // Konten utama
+            // KONTEN UTAMA
             Container(
               width: double.infinity,
               color: Colors.white,
               padding: const EdgeInsets.all(20),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 20),
 
-                  // Statistik kecil
+                  // STATISTIK
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      _buildStatCard("847", "Laporan Hari Ini", Colors.orangeAccent),
+                      _buildStatCard(
+                        "847",
+                        "Laporan Hari Ini",
+                        Colors.orangeAccent,
+                      ),
                       _buildStatCard("92%", "Akurasi", Colors.green),
                       _buildStatCard("3.2k", "Kontributor", Colors.blue),
                     ],
@@ -106,53 +107,68 @@ class _LaporanMasyarakatPageState extends State<LaporanMasyarakatPage> {
 
                   const SizedBox(height: 30),
 
-                  // Teks keterangan
+                  // INFORMASI TAMBAHAN
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       color: Colors.grey[100],
                       borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 4,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
                     ),
                     child: const Text(
                       "Data laporan terbaru akan muncul di bawah ini...",
-                      style: TextStyle(color: Colors.black54),
+                      style: TextStyle(color: Colors.black54, fontSize: 14),
                     ),
                   ),
 
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 20),
 
-                  // Tampilkan daftar laporan
+                  // DAFTAR LAPORAN
                   if (_listItems == null)
-                    const Padding(
-                      padding: EdgeInsets.all(20),
-                      child: CircularProgressIndicator(),
+                    const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(20),
+                        child: CircularProgressIndicator(),
+                      ),
                     )
                   else if (_listItems!.isEmpty)
                     const Padding(
                       padding: EdgeInsets.all(20),
-                      child: Text("Belum ada data laporan."),
+                      child: Center(
+                        child: Text(
+                          "Belum ada data laporan.",
+                          style: TextStyle(color: Colors.black54),
+                        ),
+                      ),
                     )
                   else
                     ListView.separated(
-                      separatorBuilder: (context, index) => const SizedBox(height: 10),
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
                       itemCount: _listItems!.length,
+                      separatorBuilder: (context, _) =>
+                          const SizedBox(height: 12),
                       itemBuilder: (context, index) {
                         final data = _listItems![index];
                         return Card(
                           color: Colors.white,
-                          elevation: 4,
+                          elevation: 3,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16),
                           ),
                           child: Padding(
-                            padding: const EdgeInsets.all(12),
+                            padding: const EdgeInsets.all(14),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                // Baris nama pelapor dan tombol aksi
+                                // HEADER LAPORAN
                                 Row(
                                   children: [
                                     Text(
@@ -160,50 +176,56 @@ class _LaporanMasyarakatPageState extends State<LaporanMasyarakatPage> {
                                       style: const TextStyle(
                                         fontWeight: FontWeight.w600,
                                         fontSize: 16,
-                                        color: Colors.black,
                                       ),
                                     ),
                                     const Spacer(),
                                     IconButton(
+                                      icon: const Icon(
+                                        Icons.edit,
+                                        color: Colors.blueAccent,
+                                      ),
+                                      onPressed: () async {
+                                        final result = await Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                EditLaporanPage(laporan: data),
+                                          ),
+                                        );
+                                        if (result == true) getData();
+                                      },
+                                    ),
+                                    IconButton(
+                                      icon: const Icon(
+                                        Icons.delete,
+                                        color: Colors.red,
+                                      ),
                                       onPressed: () {
                                         _showDelete(
                                           data.id ?? 0,
                                           data.deskripsi ?? '',
                                         );
                                       },
-                                      icon: const Icon(Icons.delete, color: Colors.red),
-                                    ),
-                                    IconButton(
-                                      onPressed: () async {
-                                        final result = await Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => EditLaporanPage(
-                                              laporan: data,
-                                            ),
-                                          ),
-                                        );
-                                        if (result == true) getData();
-                                      },
-                                      icon: const Icon(Icons.edit, color: Colors.blueAccent),
                                     ),
                                   ],
                                 ),
 
                                 const SizedBox(height: 6),
 
-                                // Jenis bencana
+                                // JENIS BENCANA
                                 Text(
-                                  data.jenisBencana ?? "Tidak ada data jenis bencana",
+                                  data.jenisBencana ??
+                                      "Tidak ada data jenis bencana",
                                   style: const TextStyle(
                                     fontWeight: FontWeight.w600,
                                     fontSize: 15,
+                                    color: Colors.teal,
                                   ),
                                 ),
 
                                 const SizedBox(height: 6),
 
-                                // Deskripsi
+                                // DESKRIPSI
                                 Text(
                                   data.deskripsi ?? "Deskripsi tidak tersedia",
                                   style: const TextStyle(
@@ -212,13 +234,17 @@ class _LaporanMasyarakatPageState extends State<LaporanMasyarakatPage> {
                                   ),
                                 ),
 
-                                const SizedBox(height: 6),
+                                const SizedBox(height: 8),
 
-                                // Lokasi
+                                // LOKASI
                                 Row(
                                   children: [
-                                    const Icon(Icons.location_on, color: Colors.red, size: 16),
-                                    const SizedBox(width: 4),
+                                    const Icon(
+                                      Icons.location_on,
+                                      color: Colors.red,
+                                      size: 16,
+                                    ),
+                                    const SizedBox(width: 6),
                                     Expanded(
                                       child: Text(
                                         data.lokasi ?? "Lokasi belum tercantum",
@@ -245,7 +271,7 @@ class _LaporanMasyarakatPageState extends State<LaporanMasyarakatPage> {
     );
   }
 
-  // Popup konfirmasi hapus
+  // POPUP HAPUS LAPORAN
   Future<void> _showDelete(int id, String deskripsi) async {
     return showDialog<void>(
       context: context,
@@ -254,7 +280,10 @@ class _LaporanMasyarakatPageState extends State<LaporanMasyarakatPage> {
         return AlertDialog(
           title: Text(
             'Hapus Laporan Ini?',
-            style: TextStyle(color: Colors.red[700]),
+            style: TextStyle(
+              color: Colors.red[700],
+              fontWeight: FontWeight.bold,
+            ),
           ),
           content: SingleChildScrollView(
             child: ListBody(
@@ -263,9 +292,13 @@ class _LaporanMasyarakatPageState extends State<LaporanMasyarakatPage> {
                 const SizedBox(height: 8),
                 Text(
                   'Menghapus laporan "$deskripsi" akan menghapus datanya secara permanen.',
+                  style: const TextStyle(fontSize: 14),
                 ),
                 const SizedBox(height: 12),
-                const Text('Tindakan ini tidak dapat dibatalkan.'),
+                const Text(
+                  'Tindakan ini tidak dapat dibatalkan.',
+                  style: TextStyle(color: Colors.redAccent, fontSize: 13),
+                ),
               ],
             ),
           ),
@@ -279,7 +312,7 @@ class _LaporanMasyarakatPageState extends State<LaporanMasyarakatPage> {
               child: const Text('Ya, Hapus'),
               onPressed: () async {
                 try {
-                  await DbHelper.deletePelapor(id); // pastikan nama method ini sesuai di DbHelper
+                  await DbHelper.deletePelapor(id);
                   if (mounted) {
                     Navigator.of(context).pop();
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -308,7 +341,7 @@ class _LaporanMasyarakatPageState extends State<LaporanMasyarakatPage> {
     );
   }
 
-  // Widget kecil untuk kartu statistik
+  // KARTU STATISTIK
   Widget _buildStatCard(String value, String label, Color color) {
     return Expanded(
       child: Container(

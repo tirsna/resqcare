@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:resqcare/database/db_helper.dart';
 import 'package:resqcare/database/preference_handler.dart';
-import 'package:resqcare/models/user_model.dart';
+import 'package:resqcare/service/firebase.dart';
 import 'package:resqcare/view/bottomnav.dart';
 import 'package:resqcare/view/register_screen.dart';
 
@@ -15,17 +14,17 @@ class Loginresqcare extends StatefulWidget {
 class _LoginresqcareState extends State<Loginresqcare> {
   final _formKey = GlobalKey<FormState>();
 
-  // Controller untuk menampung input pengguna
+  // Controller input
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  bool rememberMe = false; // menyimpan status checkbox “ingat saya”
-  bool showPassword = false; // mengatur visibilitas password
+  bool rememberMe = false;
+  bool showPassword = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF004D40), // warna hijau tua khas ResQcare
+      backgroundColor: const Color(0xFF004D40),
       body: Center(
         child: SingleChildScrollView(
           child: Container(
@@ -49,7 +48,7 @@ class _LoginresqcareState extends State<Loginresqcare> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    //  LOGO APLIKASI
+                    // LOGO
                     Container(
                       width: 90,
                       height: 90,
@@ -78,7 +77,7 @@ class _LoginresqcareState extends State<Loginresqcare> {
                     ),
                     const SizedBox(height: 30),
 
-                    //  FIELD EMAIL
+                    // EMAIL FIELD
                     const Align(
                       alignment: Alignment.centerLeft,
                       child: Text("Email", style: TextStyle(fontSize: 13)),
@@ -106,7 +105,7 @@ class _LoginresqcareState extends State<Loginresqcare> {
                     ),
                     const SizedBox(height: 16),
 
-                    //  FIELD PASSWORD
+                    // PASSWORD FIELD
                     const Align(
                       alignment: Alignment.centerLeft,
                       child: Text("Password", style: TextStyle(fontSize: 13)),
@@ -145,7 +144,7 @@ class _LoginresqcareState extends State<Loginresqcare> {
                     ),
                     const SizedBox(height: 10),
 
-                    //  CHECKBOX "REMEMBER ME"
+                    // REMEMBER ME
                     Row(
                       children: [
                         Checkbox(
@@ -161,7 +160,7 @@ class _LoginresqcareState extends State<Loginresqcare> {
                     ),
                     const SizedBox(height: 10),
 
-                    //  TOMBOL LOGIN
+                    //  TOMBOL LOGIN — SUDAH DIUBAH PAKAI FIREBASE
                     SizedBox(
                       width: double.infinity,
                       height: 50,
@@ -173,24 +172,24 @@ class _LoginresqcareState extends State<Loginresqcare> {
                           ),
                         ),
                         onPressed: () async {
-                          // validasi form dulu sebelum lanjut
                           if (_formKey.currentState!.validate()) {
-                            // cek user dari database lokal
-                            UserModel? user = await DbHelper.loginUser(
-                              email: emailController.text.trim(),
-                              password: passwordController.text.trim(),
-                            );
+                            //  LOGIN MENGGUNAKAN FIREBASE
+                            final firebaseUser =
+                                await FirebaseService.loginUser(
+                                  email: emailController.text.trim(),
+                                  password: passwordController.text.trim(),
+                                );
 
-                            if (user != null) {
-                              // Jika login berhasil
+                            if (firebaseUser != null) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                  content: Text('Login berhasil!'),
+                                  content: Text('Login Firebase berhasil!'),
                                   backgroundColor: Colors.green,
                                 ),
                               );
-                              // pindah ke halaman utama
+
                               PreferenceHandler.saveLogin(true);
+
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
@@ -199,16 +198,14 @@ class _LoginresqcareState extends State<Loginresqcare> {
                                 ),
                               );
                             } else {
-                              // Jika login gagal
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                  content: Text(
-                                    'Email atau password salah, coba lagi!',
-                                  ),
+                                  content: Text('Email atau password salah!'),
                                   backgroundColor: Colors.redAccent,
                                 ),
                               );
                             }
+                            //  SAMPAI SINI BAGIAN LOGIN FIREBASE
                           }
                         },
                         child: const Text(
@@ -221,9 +218,10 @@ class _LoginresqcareState extends State<Loginresqcare> {
                         ),
                       ),
                     ),
+
                     const SizedBox(height: 30),
 
-                    //  PEMISAH (garis dan teks "atau masuk dengan")
+                    // Pemisah
                     Row(
                       children: const [
                         Expanded(
@@ -242,7 +240,8 @@ class _LoginresqcareState extends State<Loginresqcare> {
                       ],
                     ),
                     const SizedBox(height: 15),
-                    //  LINK KE REGISTER
+
+                    // Ke Register
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -270,20 +269,6 @@ class _LoginresqcareState extends State<Loginresqcare> {
           ),
         ),
       ),
-    );
-  }
-
-  //  TOMBOL LOGIN SOSIAL MEDIA
-  Widget _socialButton(String assetPath) {
-    return Container(
-      padding: const EdgeInsets.all(2),
-      width: 80,
-      height: 49,
-      decoration: BoxDecoration(
-        border: Border.all(color: const Color(0xFF424242)),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Image.asset(assetPath, fit: BoxFit.contain),
     );
   }
 }

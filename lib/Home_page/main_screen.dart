@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:resqcare/Home_page/Education.dart';
+import 'package:resqcare/Home_page/penyebab.dart';
+import 'package:resqcare/view/kontak_penting.dart';
+import 'package:resqcare/view/provinsi.dart'; // TAMBAHKAN INI
 
 class Halamanutama extends StatefulWidget {
   const Halamanutama({super.key});
@@ -29,32 +32,36 @@ class _HalamanutamaState extends State<Halamanutama> {
                 context,
                 Icons.school_rounded,
                 "Edukasi Penanganan Bencana",
-                "Pelajari langkah aman menghadapi situasi darurat",
+                "Pelajari langkah aman menghadapi situasi darurat.",
                 Colors.teal.shade50,
               ),
               const SizedBox(height: 12),
+
               _buildHorizontalCard(
                 context,
-                Icons.sos_rounded,
-                "Panggilan Darurat (SOS)",
-                "Panggil bantuan cepat dari tim rescue",
-                Colors.red.shade50,
+                Icons.public_rounded,
+                "Penyebab Bencana",
+                "Ketahui faktor-faktor alam & manusia yang memicu bencana.",
+                Colors.lightBlue.shade50,
               ),
               const SizedBox(height: 12),
-              _buildHorizontalCard(
-                context,
-                Icons.report_problem_rounded,
-                "Laporkan Kejadian",
-                "Buat laporan bencana yang kamu temui",
-                Colors.orange.shade50,
-              ),
-              const SizedBox(height: 12),
+
               _buildHorizontalCard(
                 context,
                 Icons.phone_in_talk_rounded,
                 "Kontak Penting",
-                "Hubungi instansi terkait untuk bantuan",
+                "Hubungi instansi terkait untuk bantuan resmi.",
                 Colors.green.shade50,
+              ),
+              const SizedBox(height: 12),
+
+              // 🔥 MENU BARU
+              _buildHorizontalCard(
+                context,
+                Icons.map_rounded,
+                "Daftar Provinsi",
+                "Lihat semua provinsi, kota, dan indeks risikonya.",
+                Colors.orange.shade50,
               ),
             ],
           ),
@@ -72,7 +79,6 @@ class _HalamanutamaState extends State<Halamanutama> {
   ) {
     return InkWell(
       onTap: () {
-        // kalau card yang diklik adalah Edukasi
         if (title == "Edukasi Penanganan Bencana") {
           Navigator.push(
             context,
@@ -80,13 +86,30 @@ class _HalamanutamaState extends State<Halamanutama> {
               builder: (context) => const EdukasiPenangananPage(),
             ),
           );
+        } else if (title == "Penyebab Bencana") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const PenyebabBencanaPage(),
+            ),
+          );
+        } else if (title == "Kontak Penting") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const KontakPentingPage()),
+          );
+        } else if (title == "Daftar Provinsi") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ProvinsiPage()),
+          );
         } else {
-          // fitur lain nanti bisa ditambah
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text("Fitur '$title' masih dalam pengembangan.")),
           );
         }
       },
+
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.all(16),

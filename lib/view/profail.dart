@@ -1,5 +1,8 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:resqcare/database/preference_handler.dart';
+import 'package:resqcare/theme/colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:resqcare/view/login_screen.dart';
 
@@ -17,6 +20,7 @@ class _ProfilPageState extends State<ProfilPage> {
   String email = "user@trisna.id";
   String bio = "Relawan aktif yang siap membantu kapan pun.";
   String daerahAman = "Bandung";
+  String? imagePath;
 
   late TextEditingController namaController;
   late TextEditingController bioController;
@@ -38,6 +42,7 @@ class _ProfilPageState extends State<ProfilPage> {
       nama = prefs.getString('nama') ?? nama;
       bio = prefs.getString('bio') ?? bio;
       daerahAman = prefs.getString('daerahAman') ?? daerahAman;
+      imagePath = prefs.getString('imagePath');
 
       namaController.text = nama;
       bioController.text = bio;
@@ -50,6 +55,24 @@ class _ProfilPageState extends State<ProfilPage> {
     await prefs.setString('nama', namaController.text);
     await prefs.setString('bio', bioController.text);
     await prefs.setString('daerahAman', daerahController.text);
+    await prefs.setString('imagePath', imagePath ?? "");
+  }
+
+  /// ---------------------------
+  /// PICK IMAGE FUNCTION (BARU)
+  /// ---------------------------
+  Future<void> _pickImage() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? file = await picker.pickImage(source: ImageSource.gallery);
+
+    if (file != null) {
+      setState(() {
+        imagePath = file.path;
+      });
+
+      final prefs = await SharedPreferences.getInstance();
+      prefs.setString('imagePath', imagePath!);
+    }
   }
 
   @override
@@ -66,7 +89,7 @@ class _ProfilPageState extends State<ProfilPage> {
       backgroundColor: const Color(0xFFF5F6FA),
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: const Color(0xFF00695C),
+        backgroundColor: AppColors.title,
         title: const Text(
           "Profil ResqCare",
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
@@ -159,10 +182,18 @@ class _ProfilPageState extends State<ProfilPage> {
       padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
       child: Column(
         children: [
-          const CircleAvatar(
-            radius: 42,
-            backgroundColor: Colors.white,
-            child: Icon(Icons.person, color: Color(0xFF004D40), size: 45),
+          GestureDetector(
+            onTap: _isEditing ? _pickImage : null, // ← ganti foto
+            child: CircleAvatar(
+              radius: 42,
+              backgroundColor: Colors.white,
+              backgroundImage: imagePath != null && imagePath!.isNotEmpty
+                  ? FileImage(File(imagePath!))
+                  : null,
+              child: (imagePath == null || imagePath!.isEmpty)
+                  ? const Icon(Icons.person, color: Color(0xFF004D40), size: 45)
+                  : null,
+            ),
           ),
           const SizedBox(height: 10),
           Text(

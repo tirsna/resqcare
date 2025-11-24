@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:resqcare/database/db_helper.dart';
 import 'package:resqcare/models/modellaporan.dart';
 
-// Halaman utama form laporan darurat
 class FormLaporanDarurat extends StatefulWidget {
   const FormLaporanDarurat({super.key});
 
@@ -11,20 +10,16 @@ class FormLaporanDarurat extends StatefulWidget {
 }
 
 class _FormLaporanDaruratState extends State<FormLaporanDarurat> {
-  // 🔹 KEY untuk validasi form (cek input kosong)
   final _formKey = GlobalKey<FormState>();
 
-  // 🔹 Controller berfungsi menangkap teks dari TextField
   final TextEditingController _judulController = TextEditingController();
   final TextEditingController _deskripsiController = TextEditingController();
   final TextEditingController _lokasiController = TextEditingController();
   final TextEditingController _reportNameController = TextEditingController();
 
-  // 🔹 Variabel untuk menyimpan dropdown (dipilih user)
   String? _jenisBencana;
   String? _tingkatUrgensi;
 
-  // 🔹 List berisi pilihan dropdown jenis bencana
   final List<String> jenisBencanaList = [
     'Banjir',
     'Gempa Bumi',
@@ -33,106 +28,117 @@ class _FormLaporanDaruratState extends State<FormLaporanDarurat> {
     'Angin Puting Beliung',
   ];
 
-  // 🔹 List berisi pilihan dropdown tingkat urgensi
   final List<String> urgensiList = ['Rendah', 'Sedang', 'Tinggi'];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
-        title: const Text("Buat Laporan Darurat"),
+        backgroundColor: Colors.teal,
         centerTitle: true,
+        title: const Text(
+          "Buat Laporan Darurat",
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+        ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+        physics: const BouncingScrollPhysics(),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
         child: Form(
-          key: _formKey, // 🔹 Kunci form untuk validasi
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // ==================== DROPDOWN JENIS BENCANA ====================
-              _buildDropdown(
-                label: "Jenis Bencana",
-                value: _jenisBencana,
-                items: jenisBencanaList,
-                onChanged: (val) => setState(() => _jenisBencana = val),
-              ),
+          key: _formKey,
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 6,
+                  offset: const Offset(0, 3),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildDropdown(
+                  label: "Jenis Bencana",
+                  value: _jenisBencana,
+                  items: jenisBencanaList,
+                  onChanged: (val) => setState(() => _jenisBencana = val),
+                ),
+                const SizedBox(height: 18),
 
-              const SizedBox(height: 15),
+                _buildTextField(
+                  controller: _judulController,
+                  label: "Judul Laporan",
+                  hint: "Contoh: Banjir setinggi 1 meter di Jalan Merdeka",
+                ),
+                const SizedBox(height: 18),
 
-              // ==================== INPUT JUDUL LAPORAN ====================
-              _buildTextField(
-                controller: _judulController,
-                label: "Judul Laporan",
-                hint: "Contoh: Banjir setinggi 1 meter di Jalan Merdeka",
-              ),
+                _buildTextField(
+                  controller: _deskripsiController,
+                  label: "Deskripsi Detail",
+                  hint: "Jelaskan kondisi bencana dengan detail...",
+                  maxLines: 4,
+                ),
+                const SizedBox(height: 18),
 
-              const SizedBox(height: 15),
+                _buildTextField(
+                  controller: _lokasiController,
+                  label: "Lokasi Kejadian",
+                  hint: "Nama jalan, landmark, atau koordinat",
+                ),
+                const SizedBox(height: 18),
 
-              // ==================== INPUT DESKRIPSI DETAIL ====================
-              _buildTextField(
-                controller: _deskripsiController,
-                label: "Deskripsi Detail",
-                hint: "Jelaskan kondisi bencana dengan detail...",
-                maxLines: 4, // 🔹 Agar bisa menulis paragraf panjang
-              ),
+                _buildTextField(
+                  controller: _reportNameController,
+                  label: "Nama Pelapor",
+                  hint: "Masukkan nama pelapor",
+                ),
+                const SizedBox(height: 18),
 
-              const SizedBox(height: 15),
+                _buildDropdown(
+                  label: "Tingkat Urgensi",
+                  value: _tingkatUrgensi,
+                  items: urgensiList,
+                  onChanged: (val) => setState(() => _tingkatUrgensi = val),
+                ),
+                const SizedBox(height: 30),
 
-              // ==================== INPUT LOKASI KEJADIAN ====================
-              _buildTextField(
-                controller: _lokasiController,
-                label: "Lokasi Kejadian",
-                hint: "Nama jalan, landmark, atau koordinat",
-              ),
-
-              const SizedBox(height: 15),
-
-              // ==================== INPUT LOKASI KEJADIAN ====================
-              _buildTextField(
-                controller: _reportNameController,
-                label: "Nama Pelapor",
-                hint: "Nama Pelapor",
-              ),
-
-              const SizedBox(height: 15),
-
-              // ==================== DROPDOWN TINGKAT URGENSI ====================
-              _buildDropdown(
-                label: "Tingkat Urgensi",
-                value: _tingkatUrgensi,
-                items: urgensiList,
-                onChanged: (val) => setState(() => _tingkatUrgensi = val),
-              ),
-
-              const SizedBox(height: 25),
-
-              // ==================== TOMBOL KIRIM LAPORAN ====================
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _submitForm, // 🔹 Fungsi kirim laporan
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    onPressed: _submitForm,
+                    icon: const Icon(Icons.send_rounded, color: Colors.white),
+                    label: const Text(
+                      "Kirim Laporan",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: Colors.white,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.teal.shade700,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      elevation: 3,
                     ),
                   ),
-                  child: const Text(
-                    "Kirim Laporan",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  // ==================== KOMPONEN: TEXT FIELD ====================
   Widget _buildTextField({
     required TextEditingController controller,
     required String label,
@@ -142,25 +148,39 @@ class _FormLaporanDaruratState extends State<FormLaporanDarurat> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: const TextStyle(fontWeight: FontWeight.w600)),
-        const SizedBox(height: 5),
+        Text(
+          label,
+          style: const TextStyle(
+            fontWeight: FontWeight.w600,
+            color: Colors.teal,
+          ),
+        ),
+        const SizedBox(height: 6),
         TextFormField(
-          controller: controller, // 🔹 Mengambil isi teks dari input
+          controller: controller,
           maxLines: maxLines,
           validator: (val) =>
               val == null || val.isEmpty ? 'Bagian ini wajib diisi' : null,
           decoration: InputDecoration(
-            hintText: hint, // 🔹 Teks contoh di dalam field
+            hintText: hint,
+            hintStyle: const TextStyle(color: Colors.black45, fontSize: 14),
+            contentPadding: const EdgeInsets.symmetric(
+              vertical: 14,
+              horizontal: 14,
+            ),
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.teal.shade600, width: 2),
+              borderRadius: BorderRadius.circular(12),
+            ),
             filled: true,
-            fillColor: Colors.white,
+            fillColor: Colors.grey.shade50,
           ),
         ),
       ],
     );
   }
 
-  // ==================== KOMPONEN: DROPDOWN ====================
   Widget _buildDropdown({
     required String label,
     required String? value,
@@ -170,33 +190,42 @@ class _FormLaporanDaruratState extends State<FormLaporanDarurat> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: const TextStyle(fontWeight: FontWeight.w600)),
-        const SizedBox(height: 5),
+        Text(
+          label,
+          style: const TextStyle(
+            fontWeight: FontWeight.w600,
+            color: Colors.teal,
+          ),
+        ),
+        const SizedBox(height: 6),
         DropdownButtonFormField<String>(
-          initialValue: value,
+          value: value,
           hint: Text("Pilih $label"),
           items: items
-              .map(
-                (item) => DropdownMenuItem(value: item, child: Text(item)),
-              ) // 🔹 Menampilkan daftar opsi
+              .map((item) => DropdownMenuItem(value: item, child: Text(item)))
               .toList(),
-          onChanged: onChanged, // 🔹 Update nilai saat user memilih
+          onChanged: onChanged,
           validator: (val) => val == null ? 'Pilih salah satu' : null,
           decoration: InputDecoration(
+            contentPadding: const EdgeInsets.symmetric(
+              vertical: 14,
+              horizontal: 14,
+            ),
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.teal.shade600, width: 2),
+              borderRadius: BorderRadius.circular(12),
+            ),
             filled: true,
-            fillColor: Colors.white,
+            fillColor: Colors.grey.shade50,
           ),
         ),
       ],
     );
   }
 
-  // ==================== FUNGSI KIRIM DATA ====================
   void _submitForm() async {
-    // 🔹 Cek semua input sudah diisi
     if (_formKey.currentState!.validate()) {
-      // 🔹 Kumpulkan semua data dari input form
       final Laporan laporan = Laporan(
         jenisBencana: _jenisBencana!,
         judul: _judulController.text,
@@ -207,14 +236,15 @@ class _FormLaporanDaruratState extends State<FormLaporanDarurat> {
         tanggal: DateTime.now().toString(),
       );
 
-      // 🔹 Tampilkan hasilnya di console (sementara)
-      print("Laporan Terkirim: $laporan");
       await DbHelper.insertLaporan(laporan);
       Navigator.pop(context);
+
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Laporan berhasil dikirim!')),
+        const SnackBar(
+          content: Text('✅ Laporan berhasil dikirim!'),
+          backgroundColor: Colors.teal,
+        ),
       );
-      // 🔹 Tampilkan notifikasi di bawah layar
     }
   }
 }
