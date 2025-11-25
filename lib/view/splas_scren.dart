@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:resqcare/database/preference_handler.dart';
 import 'package:resqcare/view/bottomnav.dart';
+import 'package:resqcare/view/firebase/login_screen_firebase.dart';
 import 'package:resqcare/view/login_screen.dart';
 
 class SplashScreenDay18 extends StatefulWidget {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:resqcare/database/db_helper.dart';
 import 'package:resqcare/database/preference_handler.dart';
 import 'package:resqcare/models/user_model.dart';
+import 'package:resqcare/view/firebase/register_screen_firebase.dart';
 import 'package:resqcare/view/register_screen.dart';
 import 'package:resqcare/view/penyambut.dart';
 import 'package:resqcare/view/sclingfigma.dart';

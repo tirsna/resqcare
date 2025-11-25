@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:resqcare/database/preference_handler.dart';
 import 'package:resqcare/theme/colors.dart';
+import 'package:resqcare/view/firebase/login_screen_firebase.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:resqcare/view/login_screen.dart';
 
