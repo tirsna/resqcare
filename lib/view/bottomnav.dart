@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:resqcare/view/laporantrending.dart';
+import 'package:resqcare/view/firebase/laporantrending.dart';
 import 'package:resqcare/Home_page/main_screen.dart';
 import 'package:resqcare/view/maps.dart';
-import 'package:resqcare/view/profail.dart';
+import 'package:resqcare/view/profile.dart';
 
 class BottomNavExample extends StatefulWidget {
   const BottomNavExample({super.key});

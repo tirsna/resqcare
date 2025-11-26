@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart'; // Tetap dipertahankan untuk 
 import 'package:flutter/material.dart';
 import 'package:resqcare/database/preference_handler.dart';
 import 'package:resqcare/service/firebase/firebase_service.dart';
+import 'package:resqcare/view/firebase/login_screen_firebase.dart';
 import 'package:resqcare/view/penyambut.dart';
 
 class DaftarResqcare extends StatefulWidget {
@@ -21,7 +22,7 @@ class _DaftarResqcareState extends State<DaftarResqcare> {
   final TextEditingController passwordController = TextEditingController();
 
   final fromkey = GlobalKey<FormState>();
-  
+
   // State baru untuk tombol dan loading
   bool isbuttonenable = false;
   bool obscurepass = true;
@@ -58,7 +59,7 @@ class _DaftarResqcareState extends State<DaftarResqcare> {
     passwordController.dispose();
     super.dispose();
   }
-  
+
   // ===========================================
   // FUNGSI REGISTRASI FIREBASE
   // ===========================================
@@ -72,7 +73,7 @@ class _DaftarResqcareState extends State<DaftarResqcare> {
         final String email = emailcontroler.text.trim();
         final String password = passwordController.text.trim();
         final String username = namacontroler.text.trim();
-        
+
         // Memanggil fungsi registerUser dari FirebaseService
         // Ini akan membuat Auth User dan menyimpan profil di Firestore
         final userModel = await FirebaseService.registerUser(
@@ -88,23 +89,16 @@ class _DaftarResqcareState extends State<DaftarResqcare> {
             backgroundColor: Colors.green,
           ),
         );
-        
+
         // Simpan status login dan navigasi
-        // Catatan: Jika Anda ingin menyimpan nohp dan kota, 
+        // Catatan: Jika Anda ingin menyimpan nohp dan kota,
         // Anda harus memodifikasi UserFirebaseModel dan FirebaseService
-        PreferenceHandler.saveLogin(true); 
+        PreferenceHandler.saveLogin(true);
 
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(
-            builder: (context) => HalamanPenyambut(
-              email: email,
-              nama: username,
-              kota: kota.text, // Menggunakan kota yang diinput
-            ),
-          ),
+          MaterialPageRoute(builder: (context) => Loginresqcare()),
         );
-
       } on FirebaseAuthException catch (e) {
         // Penanganan Error Khusus Firebase Auth
         String message = "Terjadi kesalahan saat pendaftaran.";
@@ -113,12 +107,9 @@ class _DaftarResqcareState extends State<DaftarResqcare> {
         } else if (e.code == 'weak-password') {
           message = "Password terlalu lemah.";
         }
-        
+
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(message),
-            backgroundColor: Colors.redAccent,
-          ),
+          SnackBar(content: Text(message), backgroundColor: Colors.redAccent),
         );
       } catch (e) {
         // Penanganan Error Umum
@@ -136,7 +127,6 @@ class _DaftarResqcareState extends State<DaftarResqcare> {
     }
   }
   // ===========================================
-
 
   @override
   Widget build(BuildContext context) {
@@ -212,7 +202,6 @@ class _DaftarResqcareState extends State<DaftarResqcare> {
                     const SizedBox(height: 25),
 
                     // Semua _buildTextField sudah bagus, tidak perlu diubah
-
                     _buildTextField(
                       label: "Nama",
                       hint: "Masukkan nama anda",
@@ -301,7 +290,8 @@ class _DaftarResqcareState extends State<DaftarResqcare> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(30),
                           boxShadow: [
-                            if (isbuttonenable && !_isLoading) // Hanya tampilkan shadow jika aktif dan tidak loading
+                            if (isbuttonenable &&
+                                !_isLoading) // Hanya tampilkan shadow jika aktif dan tidak loading
                               BoxShadow(
                                 color: Colors.greenAccent.withOpacity(0.3),
                                 blurRadius: 12,
@@ -323,18 +313,22 @@ class _DaftarResqcareState extends State<DaftarResqcare> {
                             elevation: isbuttonenable && !_isLoading ? 8 : 0,
                           ),
                           // Panggil fungsi _handleRegister
-                          onPressed: (isbuttonenable && !_isLoading) ? _handleRegister : null, 
-                          child: _isLoading 
-                            ? const CircularProgressIndicator(color: Colors.white) // Tampilkan loading
-                            : const Text(
-                                "Daftar Sekarang",
-                                style: TextStyle(
+                          onPressed: (isbuttonenable && !_isLoading)
+                              ? _handleRegister
+                              : null,
+                          child: _isLoading
+                              ? const CircularProgressIndicator(
                                   color: Colors.white,
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 0.5,
+                                ) // Tampilkan loading
+                              : const Text(
+                                  "Daftar Sekarang",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 0.5,
+                                  ),
                                 ),
-                              ),
                         ),
                       ),
                     ),
@@ -371,7 +365,7 @@ class _DaftarResqcareState extends State<DaftarResqcare> {
       ),
     );
   }
-  
+
   // Widget _buildTextField (sama seperti kode Anda, ditaruh di luar build)
   Widget _buildTextField({
     required String label,

@@ -1,58 +1,66 @@
-// File: lib/models/user_firebase_model.dart
+// import 'package:cloud_firestore/cloud_firestore.dart';
 
-class UserFirebaseModel {
-  // Properti Wajib untuk Auth dan Firestore
-  final String uid;
-  final String email;
-  final String username;
+// class UserFirebaseModel1 {
+//   // Properti utama
+//   final String uid;
+//   final String email;
+//   final String username;
 
-  // Properti Tambahan dari Register Screen
-  final String nohp;
-  final String kota;
+//   // Properti tambahan
+//   final String nohp;
+//   final String kota;
 
-  // Properti Timestamp (Sesuai Service Baru)
-  final String createdAt;
-  final String updatedAt;
+//   // Timestamp
+//   final String createdAt;
+//   final String updatedAt;
 
-  const UserFirebaseModel({
-    required this.uid,
-    required this.email,
-    required this.username,
-    required this.nohp, // <<< DITAMBAHKAN
-    required this.kota, // <<< DITAMBAHKAN
-    required this.createdAt,
-    required this.updatedAt,
-  });
+//   const UserFirebaseModel1({
+//     required this.uid,
+//     required this.email,
+//     required this.username,
+//     required this.nohp,
+//     required this.kota,
+//     required this.createdAt,
+//     required this.updatedAt,
+//   });
 
-  // --- Konversi ke Map (untuk .set() atau .update() di Firestore) ---
-  Map<String, dynamic> toMap() {
-    // UID tidak perlu dimasukkan ke dalam Map karena sudah menjadi ID dokumen
-    return {
-      'email': email,
-      'username': username,
-      'nohp': nohp,
-      'kota': kota,
-      'createdAt': createdAt,
-      'updatedAt': updatedAt,
-    };
-  }
+//   // Convert object -> Map (untuk Firestore)
+//   Map<String, dynamic> toMap() {
+//     return {
+//       'email': email,
+//       'username': username,
+//       'nohp': nohp,
+//       'kota': kota,
+//       'createdAt': createdAt,
+//       'updatedAt': updatedAt,
+//     };
+//   }
 
-  // --- Factory untuk membuat objek dari Map (dari Firestore) ---
-  // Fungsi ini digunakan di FirebaseService.loginUser
-  factory UserFirebaseModel.fromMap(Map<String, dynamic> map) {
-    // Tambahkan default value jika field mungkin null di Firestore
-    return UserFirebaseModel(
-      uid:
-          map['uid']
-              as String, // UID diambil dari key Map yang ditambahkan di Service
-      email: map['email'] as String? ?? '',
-      username: map['username'] as String? ?? '',
-      nohp: map['nohp'] as String? ?? '', // <<< DITAMBAHKAN
-      kota: map['kota'] as String? ?? '', // <<< DITAMBAHKAN
-      createdAt:
-          map['createdAt'] as String? ?? DateTime.now().toIso8601String(),
-      updatedAt:
-          map['updatedAt'] as String? ?? DateTime.now().toIso8601String(),
-    );
-  }
-}
+//   // Convert Map -> object (dipakai ketika login)
+//   factory UserFirebaseModel1.fromMap(Map<String, dynamic> map) {
+//     return UserFirebaseModel1(
+//       uid: map['uid'] ?? '',
+//       email: map['email'] ?? '',
+//       username: map['username'] ?? '',
+//       nohp: map['nohp'] ?? '',
+//       kota: map['kota'] ?? '',
+//       createdAt: map['createdAt'] ?? '',
+//       updatedAt: map['updatedAt'] ?? '',
+//     );
+//   }
+
+//   // Convert DocumentSnapshot -> object (dipakai FirestoreService)
+//   factory UserFirebaseModel1.fromFirestore(DocumentSnapshot doc) {
+//     final data = doc.data() as Map<String, dynamic>;
+
+//     return UserFirebaseModel1(
+//       uid: doc.id, // auto ambil ID dokumen
+//       email: data['email'] ?? '',
+//       username: data['username'] ?? '',
+//       nohp: data['nohp'] ?? '',
+//       kota: data['kota'] ?? '',
+//       createdAt: data['createdAt'] ?? '',
+//       updatedAt: data['updatedAt'] ?? '',
+//     );
+//   }
+// }

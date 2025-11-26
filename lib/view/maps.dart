@@ -1,7 +1,49 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:geolocator/geolocator.dart';
 
-class PetaZonaBahayaPage extends StatelessWidget {
+class PetaZonaBahayaPage extends StatefulWidget {
   const PetaZonaBahayaPage({super.key});
+
+  @override
+  State<PetaZonaBahayaPage> createState() => _PetaZonaBahayaPageState();
+}
+
+class _PetaZonaBahayaPageState extends State<PetaZonaBahayaPage> {
+  GoogleMapController? mapController;
+
+  LatLng? posisiUser;
+  bool loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _ambilLokasi();
+  }
+
+  Future<void> _ambilLokasi() async {
+    try {
+      bool izin = await Geolocator.requestPermission().then(
+        (v) =>
+            v == LocationPermission.always ||
+            v == LocationPermission.whileInUse,
+      );
+
+      if (!izin) {
+        setState(() => loading = false);
+        return;
+      }
+
+      Position pos = await Geolocator.getCurrentPosition();
+
+      setState(() {
+        posisiUser = LatLng(pos.latitude, pos.longitude);
+        loading = false;
+      });
+    } catch (e) {
+      setState(() => loading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,16 +67,16 @@ class PetaZonaBahayaPage extends StatelessWidget {
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
+                    children: const [
                       Row(
                         children: [
-                          const Icon(
+                          Icon(
                             Icons.map_rounded,
                             color: Colors.white,
                             size: 28,
                           ),
-                          const SizedBox(width: 8),
-                          const Text(
+                          SizedBox(width: 8),
+                          Text(
                             "Peta Zona Bahaya",
                             style: TextStyle(
                               color: Colors.white,
@@ -44,8 +86,8 @@ class PetaZonaBahayaPage extends StatelessWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 6),
-                      const Text(
+                      SizedBox(height: 6),
+                      Text(
                         "Monitoring real-time area rawan bencana",
                         style: TextStyle(color: Colors.white70, fontSize: 13),
                       ),
@@ -55,54 +97,62 @@ class PetaZonaBahayaPage extends StatelessWidget {
 
                 const SizedBox(height: 24),
 
-                // Color(0xFF26A69A), Color(0xFF004D40)
+                // 🔹 GOOGLE MAPS
                 Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(20),
+                  height: 260,
                   decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF26A69A), Color(0xFF004D40)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
                     borderRadius: BorderRadius.circular(20),
+                    color: Colors.grey[300],
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black12,
                         blurRadius: 8,
                         offset: Offset(0, 4),
+                        color: Colors.black12,
                       ),
                     ],
                   ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(
-                        Icons.public_rounded,
-                        size: 55,
-                        color: Colors.black54,
-                      ),
-                      const SizedBox(height: 8),
-                      const Text(
-                        "Peta Interaktif ResqCare",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                          color: Colors.black87,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      const Text(
-                        "Real-time disaster monitoring",
-                        style: TextStyle(fontSize: 13, color: Colors.black54),
-                      ),
-                    ],
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: loading
+                        ? const Center(
+                            child: CircularProgressIndicator(
+                              color: Colors.teal,
+                            ),
+                          )
+                        : posisiUser == null
+                        ? const Center(
+                            child: Text(
+                              "Lokasi tidak ditemukan",
+                              style: TextStyle(color: Colors.black54),
+                            ),
+                          )
+                        : GoogleMap(
+                            initialCameraPosition: CameraPosition(
+                              target: posisiUser!,
+                              zoom: 15,
+                            ),
+                            markers: {
+                              Marker(
+                                markerId: const MarkerId("lokasi_user"),
+                                position: posisiUser!,
+                                icon: BitmapDescriptor.defaultMarkerWithHue(
+                                  BitmapDescriptor.hueAzure,
+                                ),
+                                infoWindow: const InfoWindow(
+                                  title: "Lokasi Anda",
+                                ),
+                              ),
+                            },
+                            onMapCreated: (c) => mapController = c,
+                            myLocationEnabled: true,
+                            myLocationButtonEnabled: true,
+                            zoomControlsEnabled: false,
+                          ),
                   ),
                 ),
 
                 const SizedBox(height: 28),
 
-                // 🔹 LEGENDA ZONA BAHAYA
                 Row(
                   children: const [
                     Icon(
@@ -112,7 +162,7 @@ class PetaZonaBahayaPage extends StatelessWidget {
                     ),
                     SizedBox(width: 6),
                     Text(
-                      "peta Zona Bahaya",
+                      "Peta Zona Bahaya",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
@@ -150,7 +200,8 @@ class PetaZonaBahayaPage extends StatelessWidget {
                 ),
 
                 const SizedBox(height: 40),
-                // Tambahkan di dalam Column (misal di bawah daftar zona)
+
+                // 🔹 Lokasi user (card kuning)
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.all(16),
@@ -172,7 +223,6 @@ class PetaZonaBahayaPage extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Judul
                       Row(
                         children: const [
                           Icon(
@@ -191,62 +241,22 @@ class PetaZonaBahayaPage extends StatelessWidget {
                           ),
                         ],
                       ),
-
                       const SizedBox(height: 8),
-
-                      // Alamat
-                      const Text(
-                        "JL. MH Thamrin No. 28, Jakarta Pusat",
-                        style: TextStyle(
+                      Text(
+                        posisiUser == null
+                            ? "Tidak ditemukan"
+                            : "Lat: ${posisiUser!.latitude}, Lng: ${posisiUser!.longitude}",
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 13,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-
-                      const SizedBox(height: 10),
-
-                      // Status Zona
-                      Row(
-                        children: [
-                          const Text(
-                            "Status Zona:",
-                            style: TextStyle(color: Colors.white, fontSize: 12),
-                          ),
-                          const SizedBox(width: 6),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 4,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.green[400],
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Row(
-                              children: const [
-                                Icon(
-                                  Icons.check_circle_rounded,
-                                  color: Colors.white,
-                                  size: 14,
-                                ),
-                                SizedBox(width: 4),
-                                Text(
-                                  "ZONA AMAN",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
                     ],
                   ),
                 ),
+
+                const SizedBox(height: 30),
               ],
             ),
           ),
@@ -255,7 +265,7 @@ class PetaZonaBahayaPage extends StatelessWidget {
     );
   }
 
-  // 🔹 Kartu tiap zona
+  // 🔹 Kartu zona
   Widget _buildZonaCard({
     required String title,
     required String description,
