@@ -10,25 +10,47 @@ class ProfileService {
   static final String _collection = 'users';
 
   /// Ambil profil user
-  Future<ProfileModel?> getProfile(String uid) async {
+  Future<ProfileModel> getProfile(String uid) async {
     try {
       final doc = await _firestore.collection(_collection).doc(uid).get();
-      if (!doc.exists || doc.data() == null) return null;
+
+      // Jika dokumen belum ada, buat default profile
+      if (!doc.exists || doc.data() == null) {
+        final defaultProfile = ProfileModel(
+          uid: uid,
+          name: "Pengguna ResqCare",
+          email: FirebaseAuth.instance.currentUser?.email ?? "-",
+          bio: "Relawan aktif yang siap membantu kapan pun.",
+          daerahAman: "Bandung",
+        );
+        await updateProfile(defaultProfile);
+        return defaultProfile;
+      }
+
       return ProfileModel.fromFirestore(
         doc as DocumentSnapshot<Map<String, dynamic>>,
       );
     } catch (e) {
       print("Error getProfile: $e");
-      return null;
+      // Return default jika error
+      final uid = FirebaseAuth.instance.currentUser?.uid ?? "";
+      return ProfileModel(
+        uid: uid,
+        name: "Pengguna ResqCare",
+        email: FirebaseAuth.instance.currentUser?.email ?? "-",
+        bio: "Relawan aktif yang siap membantu kapan pun.",
+        daerahAman: "Bandung",
+      );
     }
   }
 
   /// Update profil user
   Future<void> updateProfile(ProfileModel profile) async {
     try {
+      final uid = profile.uid ?? FirebaseAuth.instance.currentUser!.uid;
       await _firestore
           .collection(_collection)
-          .doc(profile.uid)
+          .doc(uid)
           .set(profile.toMap(), SetOptions(merge: true));
     } catch (e) {
       print("Error updateProfile: $e");
@@ -38,16 +60,16 @@ class ProfileService {
   /// Upload foto profil dan kembalikan URL
   Future<String?> uploadProfileImage(File file) async {
     try {
-      String uid = FirebaseAuth.instance.currentUser!.uid;
+      final uid = FirebaseAuth.instance.currentUser!.uid;
       final storageRef = _storage.ref().child('profiles/profile_$uid.png');
 
-      // Upload
+      // Upload file
       await storageRef.putFile(file);
 
-      // Ambil URL
+      // Ambil download URL
       final downloadUrl = await storageRef.getDownloadURL();
 
-      // Update di Firestore
+      // Update Firestore
       await _firestore.collection(_collection).doc(uid).set({
         'photoUrl': downloadUrl,
       }, SetOptions(merge: true));
@@ -56,6 +78,47 @@ class ProfileService {
     } catch (e) {
       print("Error uploadProfileImage: $e");
       return null;
+    }
+  }
+
+  /// Ambil statistik user
+  Future<Map<String, int>> getUserStats(String uid) async {
+    try {
+      final doc = await _firestore.collection(_collection).doc(uid).get();
+      if (!doc.exists || doc.data() == null) {
+        // Buat default statistik
+        await _firestore.collection(_collection).doc(uid).set({
+          "totalReports": 0,
+          "totalVerified": 0,
+        }, SetOptions(merge: true));
+
+        return {"totalReports": 0, "totalVerified": 0};
+      }
+      final data = doc.data()!;
+      return {
+        "totalReports": data['totalReports'] ?? 0,
+        "totalVerified": data['totalVerified'] ?? 0,
+      };
+    } catch (e) {
+      print("Error getUserStats: $e");
+      return {"totalReports": 0, "totalVerified": 0};
+    }
+  }
+
+  /// Update statistik user (misal dipanggil saat user tambah laporan)
+  Future<void> updateUserStats({
+    required String uid,
+    int incrementReports = 0,
+    int incrementVerified = 0,
+  }) async {
+    try {
+      final ref = _firestore.collection(_collection).doc(uid);
+      await ref.set({
+        'totalReports': FieldValue.increment(incrementReports),
+        'totalVerified': FieldValue.increment(incrementVerified),
+      }, SetOptions(merge: true));
+    } catch (e) {
+      print("Error updateUserStats: $e");
     }
   }
 }

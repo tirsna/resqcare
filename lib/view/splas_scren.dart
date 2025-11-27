@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:resqcare/database/preference_handler.dart';
 import 'package:resqcare/view/bottomnav.dart';
-import 'package:resqcare/view/firebase/login_screen_firebase.dart';
-import 'package:resqcare/view/login_screen.dart';
+// import 'package:resqcare/view/firebase/login_screen_firebase.dart';
+// Tidak digunakan, tetapi dibiarkan jika sewaktu-waktu dibutuhkan.
+import 'package:resqcare/view/login_screen.dart'
+    as LoginView; // <-- DIPERBAIKI DENGAN ALIAS
 
 class SplashScreenDay18 extends StatefulWidget {
   const SplashScreenDay18({super.key});
@@ -47,18 +49,24 @@ class _SplashScreenDay18State extends State<SplashScreenDay18>
   }
 
   isLoginFunction() async {
+    // Memberikan jeda 3 detik sebelum navigasi
     Future.delayed(const Duration(seconds: 3)).then((value) async {
       var isLogin = await PreferenceHandler.getLogin();
       if (isLogin != null && isLogin == true) {
+        // Jika sudah login, pergi ke BottomNavExample
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => const BottomNavExample()),
           (route) => false,
         );
       } else {
+        // Jika belum login, pergi ke LoginScreen
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => const Loginresqcare()),
+          // Mengganti Loginresqcare() dengan class yang benar (diasumsikan LoginScreen)
+          MaterialPageRoute(
+            builder: (context) => const LoginView.Loginresqcare(),
+          ), // <-- PERBAIKAN DI SINI
           (route) => false,
         );
       }
@@ -73,6 +81,9 @@ class _SplashScreenDay18State extends State<SplashScreenDay18>
 
   @override
   Widget build(BuildContext context) {
+    // Warna yang digunakan (0xFF0077B6) adalah warna Teal/Biru.
+    const Color primaryColor = Color(0xFF0077B6);
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -100,6 +111,7 @@ class _SplashScreenDay18State extends State<SplashScreenDay18>
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(100),
+                      // Catatan: Pastikan path aset ini benar
                       child: Image.asset(
                         'assets/images/resqcare.jpg',
                         fit: BoxFit.cover,
@@ -116,7 +128,7 @@ class _SplashScreenDay18State extends State<SplashScreenDay18>
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
                       letterSpacing: 1.2,
-                      color: Color(0xFF0077B6),
+                      color: primaryColor,
                     ),
                   ),
 
@@ -140,7 +152,7 @@ class _SplashScreenDay18State extends State<SplashScreenDay18>
                     height: 40,
                     child: CircularProgressIndicator(
                       strokeWidth: 3.5,
-                      valueColor: AlwaysStoppedAnimation(Color(0xFF0077B6)),
+                      valueColor: AlwaysStoppedAnimation(primaryColor),
                     ),
                   ),
                 ],

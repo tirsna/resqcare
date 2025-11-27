@@ -1,7 +1,5 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:image_picker/image_picker.dart';
 import '../theme/colors.dart';
 import '../view/firebase/login_screen_firebase.dart';
 import '../models/firebase/profile_models.dart';
@@ -21,13 +19,15 @@ class _ProfilPageState extends State<ProfilPage> {
   String email = "";
   String bio = "Relawan aktif yang siap membantu kapan pun.";
   String daerahAman = "Bandung";
-  String? imagePath;
 
   late TextEditingController namaController;
   late TextEditingController bioController;
   late TextEditingController daerahController;
 
   final ProfileService _service = ProfileService();
+
+  int totalReports = 0;
+  int totalVerified = 0;
 
   @override
   void initState() {
@@ -37,6 +37,7 @@ class _ProfilPageState extends State<ProfilPage> {
     daerahController = TextEditingController();
     email = FirebaseAuth.instance.currentUser?.email ?? "-";
     _loadProfile();
+    _loadStats();
   }
 
   Future<void> _loadProfile() async {
@@ -47,7 +48,6 @@ class _ProfilPageState extends State<ProfilPage> {
       nama = profile.name;
       bio = profile.bio;
       daerahAman = profile.daerahAman;
-      imagePath = profile.photoUrl;
 
       namaController.text = nama;
       bioController.text = bio;
@@ -63,7 +63,6 @@ class _ProfilPageState extends State<ProfilPage> {
       email: email,
       bio: bioController.text,
       daerahAman: daerahController.text,
-      photoUrl: imagePath,
     );
     await _service.updateProfile(profile);
     setState(() {
@@ -73,27 +72,14 @@ class _ProfilPageState extends State<ProfilPage> {
     });
   }
 
-  Future<void> _pickImage() async {
-    final picker = ImagePicker();
-    final file = await picker.pickImage(source: ImageSource.gallery);
-    if (file != null) {
-      File localFile = File(file.path);
-      final downloadUrl = await _service.uploadProfileImage(localFile);
-      if (!mounted || downloadUrl == null) return;
-      setState(() {
-        imagePath = downloadUrl;
-      });
-    }
-  }
-
-  Future<Map<String, dynamic>> getUserStats(String uid) async {
-    final profile = await _service.getProfile(uid);
-    // Jika belum ada statistik, default 0
-    return {
-      "totalReports": 0,
-      "totalVerified": 0,
-      ...?profile != null ? {} : null,
-    };
+  Future<void> _loadStats() async {
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+    final stats = await _service.getUserStats(uid);
+    if (!mounted) return;
+    setState(() {
+      totalReports = stats["totalReports"] ?? 0;
+      totalVerified = stats["totalVerified"] ?? 0;
+    });
   }
 
   Widget _badgeKontributor(bool aktif) {
@@ -102,11 +88,7 @@ class _ProfilPageState extends State<ProfilPage> {
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       decoration: BoxDecoration(
         gradient: aktif
-            ? LinearGradient(
-                colors: [Colors.orange, Colors.red],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              )
+            ? LinearGradient(colors: [Colors.orange, Colors.red])
             : LinearGradient(colors: [Colors.white24, Colors.white12]),
         borderRadius: BorderRadius.circular(20),
         boxShadow: aktif
@@ -137,7 +119,7 @@ class _ProfilPageState extends State<ProfilPage> {
     );
   }
 
-  Widget _buildHeader(int totalVerified, int totalReports) {
+  Widget _buildHeader() {
     bool aktif = totalVerified >= 600;
     return Container(
       width: double.infinity,
@@ -159,36 +141,10 @@ class _ProfilPageState extends State<ProfilPage> {
       padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
       child: Column(
         children: [
-          GestureDetector(
-            onTap: _isEditing ? _pickImage : null,
-            child: Stack(
-              children: [
-                CircleAvatar(
-                  radius: 45,
-                  backgroundColor: Colors.white,
-                  backgroundImage: imagePath != null && imagePath!.isNotEmpty
-                      ? NetworkImage(imagePath!)
-                      : null,
-                  child: (imagePath == null || imagePath!.isEmpty)
-                      ? Icon(Icons.person, size: 48, color: Colors.teal[900])
-                      : null,
-                ),
-                if (_isEditing)
-                  Positioned(
-                    bottom: 0,
-                    right: 0,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.teal,
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white, width: 2),
-                      ),
-                      padding: EdgeInsets.all(4),
-                      child: Icon(Icons.edit, size: 16, color: Colors.white),
-                    ),
-                  ),
-              ],
-            ),
+          CircleAvatar(
+            radius: 45,
+            backgroundColor: Colors.white,
+            child: Icon(Icons.person, size: 48, color: Colors.teal[900]),
           ),
           SizedBox(height: 12),
           Text(
@@ -325,8 +281,6 @@ class _ProfilPageState extends State<ProfilPage> {
 
   @override
   Widget build(BuildContext context) {
-    final uid = FirebaseAuth.instance.currentUser!.uid;
-
     return Scaffold(
       backgroundColor: Color(0xFFF5F6FA),
       appBar: AppBar(
@@ -349,69 +303,57 @@ class _ProfilPageState extends State<ProfilPage> {
           ),
         ],
       ),
-      body: FutureBuilder(
-        future: getUserStats(uid),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData)
-            return Center(child: CircularProgressIndicator());
-
-          final stats = snapshot.data!;
-          final totalReports = stats["totalReports"] ?? 0;
-          final totalVerified = stats["totalVerified"] ?? 0;
-
-          return SingleChildScrollView(
-            padding: EdgeInsets.all(20),
-            child: Column(
-              children: [
-                _buildHeader(totalVerified, totalReports),
-                SizedBox(height: 24),
-                _buildSectionCard(
-                  title: "Informasi Pribadi",
-                  child: Column(
-                    children: [
-                      _isEditing
-                          ? _editField("Nama Lengkap", namaController)
-                          : _textItem("Nama", nama),
-                      SizedBox(height: 10),
-                      _isEditing
-                          ? _editField("Bio", bioController, maxLines: 2)
-                          : _textItem("Bio", bio),
-                      SizedBox(height: 10),
-                      _isEditing
-                          ? _editField("Daerah Aman", daerahController)
-                          : _textItem("Daerah Aman", daerahAman),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 20),
-                _buildSectionCard(
-                  title: "Statistik Kontribusi",
-                  child: Column(
-                    children: [
-                      _buildStatItem(
-                        Icons.article,
-                        "Total Laporan",
-                        "$totalReports",
-                      ),
-                      _buildStatItem(
-                        Icons.verified,
-                        "Terverifikasi",
-                        "$totalVerified",
-                      ),
-                      _buildStatItem(
-                        Icons.local_fire_department,
-                        "Level Kontributor",
-                        totalVerified >= 600 ? "Legend 🔥" : "Pemula",
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 30),
-                _logoutButton(context),
-              ],
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(20),
+        child: Column(
+          children: [
+            _buildHeader(),
+            SizedBox(height: 24),
+            _buildSectionCard(
+              title: "Informasi Pribadi",
+              child: Column(
+                children: [
+                  _isEditing
+                      ? _editField("Nama Lengkap", namaController)
+                      : _textItem("Nama", nama),
+                  SizedBox(height: 10),
+                  _isEditing
+                      ? _editField("Bio", bioController, maxLines: 2)
+                      : _textItem("Bio", bio),
+                  SizedBox(height: 10),
+                  _isEditing
+                      ? _editField("Daerah Aman", daerahController)
+                      : _textItem("Daerah Aman", daerahAman),
+                ],
+              ),
             ),
-          );
-        },
+            SizedBox(height: 20),
+            _buildSectionCard(
+              title: "Statistik Kontribusi",
+              child: Column(
+                children: [
+                  _buildStatItem(
+                    Icons.article,
+                    "Total Laporan",
+                    "$totalReports",
+                  ),
+                  _buildStatItem(
+                    Icons.verified,
+                    "Terverifikasi",
+                    "$totalVerified",
+                  ),
+                  _buildStatItem(
+                    Icons.local_fire_department,
+                    "Level Kontributor",
+                    totalVerified >= 600 ? "Legend 🔥" : "Pemula",
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 30),
+            _logoutButton(context),
+          ],
+        ),
       ),
     );
   }

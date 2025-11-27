@@ -6,7 +6,7 @@ class ProfileModel {
   String email;
   String bio;
   String daerahAman;
-  String? photoUrl;
+
 
   ProfileModel({
     this.uid,
@@ -14,7 +14,7 @@ class ProfileModel {
     required this.email,
     required this.bio,
     required this.daerahAman,
-    this.photoUrl,
+
   });
 
   factory ProfileModel.fromFirestore(
@@ -27,7 +27,7 @@ class ProfileModel {
       email: data['email'] ?? '',
       bio: data['bio'] ?? '',
       daerahAman: data['daerahAman'] ?? '',
-      photoUrl: data['photoUrl'] ?? '',
+
     );
   }
 
@@ -37,7 +37,7 @@ class ProfileModel {
       "email": email,
       "bio": bio,
       "daerahAman": daerahAman,
-      "photoUrl": photoUrl ?? "",
+
     };
   }
 }

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:resqcare/firebase_options.dart';
 import 'package:resqcare/view/splas_scren.dart';
 
-import 'view/splas_scren.dart';
+// import 'view/splas_scren.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
