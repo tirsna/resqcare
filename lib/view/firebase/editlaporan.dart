@@ -73,7 +73,7 @@ class _EditLaporanPageState extends State<EditLaporanPage> {
               const SizedBox(height: 16),
 
               DropdownButtonFormField(
-                value: jenisBencana,
+                initialValue: jenisBencana,
                 decoration: _input("Jenis Bencana"),
                 dropdownColor: Colors.white,
                 items: ["Banjir", "Gempa", "Kebakaran", "Tanah Longsor"]
@@ -97,7 +97,7 @@ class _EditLaporanPageState extends State<EditLaporanPage> {
               const SizedBox(height: 16),
 
               DropdownButtonFormField(
-                value: urgensi,
+                initialValue: urgensi,
                 decoration: _input("Urgensi"),
                 dropdownColor: Colors.white,
                 items: ["Rendah", "Sedang", "Tinggi"]
@@ -127,6 +127,7 @@ class _EditLaporanPageState extends State<EditLaporanPage> {
                       deskripsi: deskC.text,
                       lokasi: lokasiC.text,
                       urgensi: urgensi!,
+
                       tanggal: widget.laporan.tanggal,
                     );
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:resqcare/theme/colors.dart';
+
 import 'kota_page.dart';
 
 class ProvinsiPage extends StatelessWidget {
@@ -56,7 +57,6 @@ class ProvinsiPage extends StatelessWidget {
             color: AppColors.background,
             margin: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
             child: ListTile(
-              leading: const Icon(Icons.map, color: Colors.grey),
               title: Text(
                 provinsiIndonesia[index],
                 style: const TextStyle(fontWeight: FontWeight.bold),

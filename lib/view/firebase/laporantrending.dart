@@ -11,7 +11,6 @@ class LaporanMasyarakatPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-
       appBar: AppBar(
         backgroundColor: Colors.teal,
         elevation: 0,
@@ -22,7 +21,7 @@ class LaporanMasyarakatPage extends StatelessWidget {
         centerTitle: true,
       ),
 
-      // 🔥 FAB BUTTON TAMBAH (Estetik)
+      // 🔥 FAB BUTTON TAMBAH
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.teal,
         child: const Icon(Icons.add, color: Colors.white, size: 30),
@@ -70,54 +69,78 @@ class LaporanMasyarakatPage extends StatelessWidget {
                     ),
                   ],
                 ),
-                child: ListTile(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(18),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 12,
-                  ),
-
-                  // TITLE LAPORAN
-                  title: Text(
-                    d.judul,
-                    style: const TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black87,
-                    ),
-                  ),
-
-                  // SUBTITLE (Jenis Bencana)
-                  subtitle: Text(
-                    d.jenisBencana,
-                    style: TextStyle(fontSize: 14, color: Colors.black54),
-                  ),
-
-                  // ICON ACTIONS
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Edit Button
-                      IconButton(
-                        icon: const Icon(Icons.edit, color: Colors.teal),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => EditLaporanPage(laporan: d),
-                            ),
-                          );
-                        },
+                      // Judul Laporan
+                      Text(
+                        d.judul,
+                        style: const TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+
+                      // Jenis Bencana
+                      Text(
+                        "Jenis Bencana: ${d.jenisBencana}",
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.black54,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+
+                      // Lokasi Kejadian
+                      Text(
+                        "Lokasi: ${d.lokasi}",
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.black54,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+
+                      // Deskripsi / Detail Laporan
+                      Text(
+                        d.deskripsi,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.black87,
+                        ),
                       ),
 
-                      // Delete Button
-                      IconButton(
-                        icon: const Icon(Icons.delete, color: Colors.redAccent),
-                        onPressed: () {
-                          LaporanFirebaseService().hapusLaporan(d.id!);
-                        },
+                      const SizedBox(height: 12),
+
+                      // Action Buttons (Edit & Delete)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.edit, color: Colors.teal),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => EditLaporanPage(laporan: d),
+                                ),
+                              );
+                            },
+                          ),
+                          IconButton(
+                            icon: const Icon(
+                              Icons.delete,
+                              color: Colors.redAccent,
+                            ),
+                            onPressed: () {
+                              LaporanFirebaseService().hapusLaporan(d.id!);
+                            },
+                          ),
+                        ],
                       ),
                     ],
                   ),

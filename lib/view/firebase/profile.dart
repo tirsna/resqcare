@@ -1,9 +1,10 @@
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../theme/colors.dart';
-import '../view/firebase/login_screen_firebase.dart';
-import '../models/firebase/profile_models.dart';
-import '../service/firebase/profile_service.dart';
+import 'package:flutter/material.dart';
+
+import '../../models/firebase/profile_models.dart';
+import '../../service/firebase/profile_service.dart';
+import '../../theme/colors.dart';
+import 'login_screen_firebase.dart';
 
 class ProfilPage extends StatefulWidget {
   const ProfilPage({super.key});
@@ -43,7 +44,7 @@ class _ProfilPageState extends State<ProfilPage> {
   Future<void> _loadProfile() async {
     final uid = FirebaseAuth.instance.currentUser!.uid;
     final profile = await _service.getProfile(uid);
-    if (!mounted || profile == null) return;
+    if (!mounted) return;
     setState(() {
       nama = profile.name;
       bio = profile.bio;

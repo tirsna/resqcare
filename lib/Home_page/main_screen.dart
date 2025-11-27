@@ -1,9 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http; // Import library http
-import 'dart:convert';
 import 'package:resqcare/Home_page/Education.dart';
 import 'package:resqcare/Home_page/penyebab.dart';
-import 'package:resqcare/view/kontak_penting.dart';
+import 'package:resqcare/view/Tanda_bencana.dart';
 import 'package:resqcare/view/provinsi.dart';
 
 // Definisi API Key dan Konstanta
@@ -140,7 +141,7 @@ class _HalamanutamaState extends State<Halamanutama> {
               color: lightTeal,
             ),
             child: IconButton(
-              onPressed: () => _navigateToPage(const KontakPentingPage()),
+              onPressed: () => _navigateToPage(const TandaBencanaPage()),
               icon: const Icon(
                 Icons.contact_phone_outlined,
                 size: 28,
@@ -361,9 +362,9 @@ class _HalamanutamaState extends State<Halamanutama> {
               ),
               const SizedBox(width: 12),
               _buildEducationCard(
-                title: "Nomor Penting",
-                icon: Icons.phone_callback_outlined,
-                onTap: () => _navigateToPage(const KontakPentingPage()),
+                title: "Tanda Bencana",
+                icon: Icons.warning_amber_outlined,
+                onTap: () => _navigateToPage(const TandaBencanaPage()),
               ),
               const SizedBox(width: 16),
             ],

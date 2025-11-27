@@ -22,7 +22,8 @@ class LaporanFirebase {
   });
 
   factory LaporanFirebase.fromFirestore(
-      DocumentSnapshot<Map<String, dynamic>> doc) {
+    DocumentSnapshot<Map<String, dynamic>> doc,
+  ) {
     final data = doc.data()!;
     return LaporanFirebase(
       id: doc.id,
