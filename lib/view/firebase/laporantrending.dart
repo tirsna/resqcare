@@ -12,7 +12,7 @@ class LaporanMasyarakatPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.teal,
+        backgroundColor: Color(0xFF008080),
         elevation: 0,
         title: const Text(
           "Laporan Masyarakat",
@@ -21,7 +21,7 @@ class LaporanMasyarakatPage extends StatelessWidget {
         centerTitle: true,
       ),
 
-      // 🔥 FAB BUTTON TAMBAH
+      //  FAB BUTTON TAMBAH
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.teal,
         child: const Icon(Icons.add, color: Colors.white, size: 30),

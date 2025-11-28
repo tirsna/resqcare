@@ -9,10 +9,10 @@ class LaporanFirebaseService {
   /// ➕ Tambah laporan + update statistik user
   Future<String> tambahLaporan(LaporanFirebase laporan) async {
     try {
-      // 1️⃣ Simpan laporan ke Firestore
+      // 1️ Simpan laporan ke Firestore
       final doc = await _firestore.collection(_collection).add(laporan.toMap());
 
-      // 2️⃣ Update statistik user otomatis
+      // 2️ Update statistik user otomatis
       final uid = FirebaseAuth.instance.currentUser!.uid;
 
       final userRef = _firestore.collection("users").doc(uid);
@@ -34,7 +34,7 @@ class LaporanFirebaseService {
     }
   }
 
-  /// 🔁 Ambil semua data realtime
+  ///  Ambil semua data realtime
   Stream<List<LaporanFirebase>> getSemuaLaporan() {
     return _firestore.collection(_collection).snapshots().map((snapshot) {
       return snapshot.docs.map((doc) {
@@ -45,7 +45,7 @@ class LaporanFirebaseService {
     });
   }
 
-  /// 🔍 Ambil laporan berdasarkan ID
+  ///  Ambil laporan berdasarkan ID
   Future<LaporanFirebase?> getById(String id) async {
     try {
       final doc = await _firestore.collection(_collection).doc(id).get();
@@ -69,7 +69,7 @@ class LaporanFirebaseService {
     }
   }
 
-  /// ✏ Update laporan (dipakai admin verifikasi)
+  /// Update laporan (dipakai admin verifikasi)
   Future<void> updateLaporan(LaporanFirebase laporan) async {
     if (laporan.id == null) {
       throw Exception("ID laporan tidak boleh null saat update!");
@@ -85,7 +85,7 @@ class LaporanFirebaseService {
     }
   }
 
-  /// ❌ Hapus laporan
+  ///  Hapus laporan
   Future<void> hapusLaporan(String id) async {
     try {
       await _firestore.collection(_collection).doc(id).delete();

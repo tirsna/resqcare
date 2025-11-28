@@ -133,23 +133,6 @@ class _HalamanutamaState extends State<Halamanutama> {
               ),
             ],
           ),
-
-          // Tombol Kontak Darurat
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              color: lightTeal,
-            ),
-            child: IconButton(
-              onPressed: () => _navigateToPage(const TandaBencanaPage()),
-              icon: const Icon(
-                Icons.contact_phone_outlined,
-                size: 28,
-                color: primaryTeal,
-              ),
-              tooltip: "Kontak Darurat",
-            ),
-          ),
         ],
       ),
     );

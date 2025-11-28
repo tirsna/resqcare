@@ -126,7 +126,7 @@ class _ProfilPageState extends State<ProfilPage> {
       width: double.infinity,
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFF26A69A), Color(0xFF004D40)],
+          colors: [Color(0xFF008080), Color.fromARGB(255, 1, 128, 106)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -286,7 +286,7 @@ class _ProfilPageState extends State<ProfilPage> {
       backgroundColor: Color(0xFFF5F6FA),
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: AppColors.title,
+        backgroundColor: Color(0xFF008080),
         title: Text(
           "Profil ResqCare",
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
